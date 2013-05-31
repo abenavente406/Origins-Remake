@@ -21,6 +21,8 @@ namespace Origins_Remake
         public const int GAME_WIDTH = 800;
         public const int GAME_HEIGHT = 480;
 
+        public static ContentManager gameContent;
+
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
 
@@ -36,8 +38,10 @@ namespace Origins_Remake
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            Components.Add(new InputHandler(this));
+            gameContent = Content;
++
+ 330
+            .0Co++03mponents.Add(new InputHandler(this));
 
             manager = new GameStateManager(this);
             Components.Add(manager);

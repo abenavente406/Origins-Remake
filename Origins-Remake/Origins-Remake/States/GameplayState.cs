@@ -16,7 +16,10 @@ namespace Origins_Remake.States
         }
 
         public GameplayState(Game game, GameStateManager manager)
-            : base(game, manager) { }
+            : base(game, manager) 
+        {
+        
+        }
 
         protected override void LoadContent()
         {
