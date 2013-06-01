@@ -1,4 +1,5 @@
 Content\Fonts\default.xnb
+Content\Fonts\loading.xnb
 Content\Fonts\title.xnb
 Content\Images\waterfall\water0.xnb
 Content\Images\waterfall\water1.xnb
@@ -9,8 +10,4 @@ Content\Images\waterfall\water5.xnb
 Content\Images\waterfall\water6.xnb
 Content\Images\waterfall\water7.xnb
 Content\Sprites\tilesheet_0.xnb
-Content\Fonts\loading.xnb
 Content\Fonts\version.xnb
-Content\Sprites\dungeon_tiles.xnb
-Content\Sprites\tree.xnb
-Content\Sprites\rock.xnb

@@ -29,6 +29,11 @@ namespace Origins_Remake.States
             controls = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
         }
 
+        public override void LargeLoadContent(object sender)
+        {
+            FinishedLoading = true;
+        }
+
         public override void Update(GameTime gameTime)
         {
             controls.Update(gameTime, playerIndexInControl);
@@ -45,6 +50,12 @@ namespace Origins_Remake.States
             batch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected void SwitchStateWithFade(GameState targetState)
+        {
+            this.IsExiting = true;
+            StateManager.TargetState = targetState;
         }
     }
 }

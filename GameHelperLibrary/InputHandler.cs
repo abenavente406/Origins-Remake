@@ -141,7 +141,7 @@ namespace GameHelperLibrary
         public static bool ButtonPressed(Buttons button, PlayerIndex index)
         {
             return gamePadStates[(int)index].IsButtonDown(button) &&
-                gamePadStates[(int)index].IsButtonUp(button);
+                lastGamePadStates[(int)index].IsButtonUp(button);
         }
 
         public static bool ButtonDown(Buttons button, PlayerIndex index)

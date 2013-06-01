@@ -36,6 +36,8 @@ namespace GameHelperLibrary
     public abstract partial class GameState : DrawableGameComponent
     {
         #region Fields and Properties
+        public volatile bool FinishedLoading = false;
+
         /// <summary>
         /// The game components within the game state
         /// </summary>
@@ -144,6 +146,8 @@ namespace GameHelperLibrary
             FadeOutRect = new DrawableRectangle(GraphicsDevice, new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height), Color.Black, true);
         }
+
+        public abstract void LargeLoadContent(object sender);
         #endregion
 
         #region Update and Draw

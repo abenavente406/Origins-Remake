@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using GameHelperLibrary;
 using Origins_Remake.States;
+using Origins_Remake.Util;
 
 namespace Origins_Remake
 {
@@ -18,6 +19,7 @@ namespace Origins_Remake
     /// </summary>
     public class MainGame : Microsoft.Xna.Framework.Game
     {
+        public const string VERSION = "v.0.0.5";
         public const int GAME_WIDTH = 800;
         public const int GAME_HEIGHT = 480;
 
@@ -39,9 +41,10 @@ namespace Origins_Remake
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gameContent = Content;
-+
- 330
-            .0Co++03mponents.Add(new InputHandler(this));
+
+            Components.Add(new InputHandler(this));
+
+            SheetManager.Initialize(this);
 
             manager = new GameStateManager(this);
             Components.Add(manager);
@@ -52,12 +55,14 @@ namespace Origins_Remake
             graphics.ApplyChanges();
             IsMouseVisible = true;
 
+            NoiseGenerator.Initialize(this);
+
             base.Initialize();
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkKhaki);
+            GraphicsDevice.Clear(Color.Black);
 
             base.Draw(gameTime);
         }

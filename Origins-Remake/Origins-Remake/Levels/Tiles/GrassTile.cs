@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Origins_Remake.Util;
 
 namespace Origins_Remake.Levels.Tiles
 {
-    public class VoidTile : Tile
+    class GrassTile : Tile
     {
-        public VoidTile(Point pos)
+        public GrassTile(Point pos)
             : base(pos, 32, 32) { }
-
-        public override void SetId()
-        {
-            id = 0;
-        }
 
         public override void SetTileSolid()
         {
-            isSolid = true;
+            isSolid = false;
         }
 
         public override void SetTileTexture()
         {
-            
+            texture = SheetManager.TileSheets["basicTiles"].GetSubImage(1, 0);
         }
     }
 }

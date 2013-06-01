@@ -35,6 +35,9 @@ namespace Origins_Remake.States
 
         Label title;
         Animation anim;
+
+        SpriteFont debugFont;
+
         #endregion
 
         #region Initialization
@@ -53,6 +56,7 @@ namespace Origins_Remake.States
             title = new Label();
             title.SpriteFont = Content.Load<SpriteFont>("Fonts\\title");
             title.Text = "O R I G I N S";
+            title.Color = Color.White;
             title.Position = new Vector2(MainGame.GAME_WIDTH / 2 - title.Width / 2, 90);
             controls.Add(title);
 
@@ -117,7 +121,7 @@ namespace Origins_Remake.States
             LinkLabel startGame = new LinkLabel(2) { Name = "lnklblNewGame", Text = "Start" };
             startGame.Position = new Vector2(prompt.Position.X, name.Position.Y + 44);
             startGame.OnMouseIn += LinkLabel_OnMouseIn;
-            startGame.Selected += (o, e) => { StateManager.PushState(new GameplayState(gameRef, StateManager)); };
+            startGame.Selected += (o, e) => { SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager))); };
             startGame.Effect = ControlEffect.PULSE;
 
             LinkLabel cancel = new LinkLabel(3) { Name = "lnklblCancel", Text = "Cancel" };
@@ -163,6 +167,8 @@ namespace Origins_Remake.States
             quitControls.Add(yes);
             quitControls.Add(no);
             #endregion
+
+            debugFont = Content.Load<SpriteFont>("Fonts\\version");
         }
         #endregion
 
@@ -231,6 +237,13 @@ namespace Origins_Remake.States
             var batch = gameRef.spriteBatch;
             batch.Begin();
             anim.Draw(batch, gameTime, new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT));
+#if DEBUG
+            batch.DrawString(debugFont, "DEBUGGING -- " + MainGame.VERSION, new Vector2(MainGame.GAME_WIDTH - debugFont.MeasureString(
+                "DEBUGGING -- " + MainGame.VERSION).X - 2, MainGame.GAME_HEIGHT - debugFont.LineSpacing - 2), Color.White);
+#else
+            batch.DrawString(debugFont, MainGame.VERSION, new Vector2(MainGame.GAME_WIDTH - debugFont.MeasureString(
+                MainGame.VERSION).X - 2, MainGame.GAME_HEIGHT - debugFont.LineSpacing - 2), Color.White);
+#endif
             batch.End();
 
             base.Draw(gameTime);
@@ -253,6 +266,8 @@ namespace Origins_Remake.States
                         quitControls.Draw(batch, gameTime);
                         break;
                 }
+
+                FadeOutRect.Draw(batch, Vector2.Zero, FadeOutColor);
             }
             batch.End();
         }

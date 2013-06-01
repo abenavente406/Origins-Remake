@@ -64,6 +64,7 @@
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Storage, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -72,14 +73,31 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Levels\DungeonLevel.cs" />
     <Compile Include="Levels\Level.cs" />
+    <Compile Include="Levels\Objects\GrassShrub.cs" />
+    <Compile Include="Levels\Objects\LevelObject.cs" />
+    <Compile Include="Levels\Objects\Tree.cs" />
+    <Compile Include="Levels\PerlinLevel.cs" />
+    <Compile Include="Levels\RandomLevel.cs" />
+    <Compile Include="Levels\SlfLevel.cs" />
     <Compile Include="Levels\Tile.cs" />
-    <Compile Include="Levels\Tiles\VoidTile.cs" />
+    <Compile Include="Levels\Tiles\BlackTile.cs" />
+    <Compile Include="Levels\Tiles\DungeonFloorTile.cs" />
+    <Compile Include="Levels\Tiles\DungeonWallTile.cs" />
+    <Compile Include="Levels\Tiles\GrassTile.cs" />
+    <Compile Include="Levels\Tiles\SandTile.cs" />
+    <Compile Include="Levels\Tiles\WaterTile.cs" />
+    <Compile Include="Util\NoiseGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MainGame.cs" />
+    <Compile Include="Util\SheetManager.cs" />
     <Compile Include="States\BaseGameState.cs" />
+    <Compile Include="Util\Camera.cs" />
     <Compile Include="States\GameplayState.cs" />
+    <Compile Include="States\LoadingState.cs" />
     <Compile Include="States\MainMenuState.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +110,10 @@
     <ProjectReference Include="..\..\GameHelperLibrary\GameHelperLibrary.csproj">
       <Project>{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}</Project>
       <Name>GameHelperLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PerlinNoise\PerlinNoise.csproj">
+      <Project>{4FB770A7-7739-49A5-890F-370ACC223A85}</Project>
+      <Name>PerlinNoise</Name>
     </ProjectReference>
     <ProjectReference Include="..\Origins-RemakeContent\Origins-RemakeContent.contentproj">
       <Name>Origins_RemakeContent</Name>

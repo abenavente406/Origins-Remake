@@ -55,6 +55,11 @@ namespace GameHelperLibrary.Controls
                     OnSelected(null);
             }
 
+            if (hasFocus)
+                if (InputHandler.ButtonPressed(Buttons.A, PlayerIndex.One) ||
+                    InputHandler.ButtonPressed(Buttons.Start, PlayerIndex.One))
+                    OnSelected(null);
+
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gametime)
