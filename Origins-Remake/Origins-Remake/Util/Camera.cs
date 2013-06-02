@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Origins_Remake.Levels;
+using TileEngineLibrary;
 
 namespace Origins_Remake.Util
 {
@@ -27,7 +28,7 @@ namespace Origins_Remake.Util
 
         public static Rectangle ViewPortBounds
         {
-            get { return new Rectangle((int)pos.X, (int)pos.Y, width, height); }
+            get { return new Rectangle((int)pos.X, (int)pos.Y, (int)(width / zoom), (int)(height / zoom)); }
         }
 
         public static float Zoom

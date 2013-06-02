@@ -8,6 +8,7 @@ using Origins_Remake.Levels;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Origins_Remake.Util;
+using Origins_Remake.Entities;
 
 namespace Origins_Remake.States
 {
@@ -25,11 +26,14 @@ namespace Origins_Remake.States
 
         // Test Dungeon Level
         // ------------------
-        DungeonLevel testDungeonLevel;
+        //DungeonLevel testDungeonLevel;
 
         // Test Perlin Level
         // -----------------
         //PerlinLevel testPerlinLevel;
+
+        LevelManager levelManager;
+        EntityManager entityManager;
 
         public GameplayState(Game game, GameStateManager manager)
             : base(game, manager) 
@@ -44,21 +48,26 @@ namespace Origins_Remake.States
 
         public override void LargeLoadContent(object sender)
         {
+            // ----------------------------
             // Test Random Level Generation 
             // ----------------------------
-            //testRandomLevel = new RandomLevel(100, 50, 32, 32);
-            //Camera.Initialize(gameRef, Vector2.Zero, Vector2.Zero,
-            //    new Vector2(testRandomLevel.RealWidth - MainGame.GAME_WIDTH, testRandomLevel.RealHeight - MainGame.GAME_HEIGHT));
-
+            // testRandomLevel = new RandomLevel(100, 50, 32, 32);
+            // Camera.Initialize(gameRef, Vector2.Zero, testRandomLevel;
+            // -----------------------------
             // Test Dungeon Level Generation
             // -----------------------------
-            testDungeonLevel = new DungeonLevel(100, 50, 32, 32);
-            Camera.Initialize(gameRef, Vector2.Zero, testDungeonLevel);
-
+            // testDungeonLevel = new DungeonLevel(100, 50, 32, 32);
+            // Camera.Initialize(gameRef, Vector2.Zero, testDungeonLevel);
+            // ----------------------------
             // Test Perlin Level Generation
             // ----------------------------
-            //testPerlinLevel = new PerlinLevel(150, 32, 32);
-            //Camera.Initialize(gameRef, Vector2.Zero, testPerlinLevel);
+            // testPerlinLevel = new PerlinLevel(150, 32, 32);
+            // Camera.Initialize(gameRef, Vector2.Zero, testPerlinLevel);
+
+            levelManager = new LevelManager(gameRef);
+            Camera.Initialize(gameRef, Vector2.Zero, LevelManager.CurrentLevel);
+
+            entityManager = new EntityManager(gameRef);
 
             base.LargeLoadContent(sender);
         }
@@ -66,12 +75,7 @@ namespace Origins_Remake.States
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            if (InputHandler.KeyDown(Keys.Right)) Camera.Move(new Vector2(2, 0));
-            if (InputHandler.KeyDown(Keys.Left)) Camera.Move(new Vector2(-2, 0));
-            if (InputHandler.KeyDown(Keys.Up)) Camera.Move(new Vector2(0, -2));
-            if (InputHandler.KeyDown(Keys.Down)) Camera.Move(new Vector2(0, 2));
-
+        
 #if DEBUG
             if (InputHandler.KeyDown(Keys.OemPlus)) Camera.Zoom -= .01f;
             if (InputHandler.KeyDown(Keys.OemMinus)) Camera.Zoom += .01f;
@@ -83,11 +87,14 @@ namespace Origins_Remake.States
 
             // Test dungeon level update
             // -------------------------
-            testDungeonLevel.Update(gameTime);
+            // testDungeonLevel.Update(gameTime);
 
             // Test perlin level update
             // ------------------------
             //testPerlinLevel.Update(gameTime);
+
+            LevelManager.Update(gameTime);
+            EntityManager.UpdateAll(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -95,7 +102,7 @@ namespace Origins_Remake.States
             base.Draw(gameTime);
 
             var spriteBatch = gameRef.spriteBatch;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.Default, RasterizerState.CullNone, null, Camera.GetTransformation());
             
             // Test random level drawing
@@ -104,10 +111,13 @@ namespace Origins_Remake.States
 
             // Test dungeon level drawing
             // --------------------------
-            testDungeonLevel.Draw(spriteBatch, gameTime);
+            // testDungeonLevel.Draw(spriteBatch, gameTime);
 
             // Test perlin level drawing
             //testPerlinLevel.Draw(spriteBatch, gameTime);
+
+            LevelManager.Draw(spriteBatch, gameTime);
+            EntityManager.Draw(spriteBatch, gameTime);
 
             spriteBatch.End();
 
