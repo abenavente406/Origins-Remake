@@ -12,7 +12,7 @@ namespace Origins_Remake
         {
             using (MainGame game = new MainGame())
             {
-                game.Run();
+                    game.Run();
             }
         }
     }

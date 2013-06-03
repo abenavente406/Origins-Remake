@@ -2,9 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using OriginsLibrary.Util;
 using TileEngineLibrary.Tiles;
+using System;
 
 namespace TileEngineLibrary
 {
+    [Serializable]
     public class PerlinLevel : Level
     {
         public PerlinLevel(int size, int tileWidth, int tileHeight)

@@ -40,6 +40,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lstLevelTypes = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.numMapWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTileWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMapHeight)).BeginInit();
@@ -48,14 +49,14 @@
             // 
             // txtMapName
             // 
-            this.txtMapName.Location = new System.Drawing.Point(81, 18);
+            this.txtMapName.Location = new System.Drawing.Point(80, 55);
             this.txtMapName.Name = "txtMapName";
             this.txtMapName.Size = new System.Drawing.Size(210, 20);
             this.txtMapName.TabIndex = 0;
             // 
             // numMapWidth
             // 
-            this.numMapWidth.Location = new System.Drawing.Point(80, 60);
+            this.numMapWidth.Location = new System.Drawing.Point(79, 97);
             this.numMapWidth.Name = "numMapWidth";
             this.numMapWidth.Size = new System.Drawing.Size(57, 20);
             this.numMapWidth.TabIndex = 1;
@@ -67,7 +68,7 @@
             // 
             // numTileWidth
             // 
-            this.numTileWidth.Location = new System.Drawing.Point(80, 86);
+            this.numTileWidth.Location = new System.Drawing.Point(79, 123);
             this.numTileWidth.Name = "numTileWidth";
             this.numTileWidth.Size = new System.Drawing.Size(57, 20);
             this.numTileWidth.TabIndex = 1;
@@ -79,7 +80,7 @@
             // 
             // numMapHeight
             // 
-            this.numMapHeight.Location = new System.Drawing.Point(234, 60);
+            this.numMapHeight.Location = new System.Drawing.Point(233, 97);
             this.numMapHeight.Name = "numMapHeight";
             this.numMapHeight.Size = new System.Drawing.Size(57, 20);
             this.numMapHeight.TabIndex = 1;
@@ -91,7 +92,7 @@
             // 
             // numTileHeight
             // 
-            this.numTileHeight.Location = new System.Drawing.Point(234, 86);
+            this.numTileHeight.Location = new System.Drawing.Point(233, 123);
             this.numTileHeight.Name = "numTileHeight";
             this.numTileHeight.Size = new System.Drawing.Size(57, 20);
             this.numTileHeight.TabIndex = 1;
@@ -104,7 +105,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 21);
+            this.label1.Location = new System.Drawing.Point(11, 58);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 2;
@@ -113,7 +114,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 62);
+            this.label2.Location = new System.Drawing.Point(11, 99);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 13);
             this.label2.TabIndex = 2;
@@ -122,7 +123,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 88);
+            this.label3.Location = new System.Drawing.Point(11, 125);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 2;
@@ -131,7 +132,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(166, 62);
+            this.label4.Location = new System.Drawing.Point(165, 99);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(65, 13);
             this.label4.TabIndex = 2;
@@ -140,7 +141,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(166, 88);
+            this.label5.Location = new System.Drawing.Point(165, 125);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(61, 13);
             this.label5.TabIndex = 2;
@@ -148,7 +149,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(24, 131);
+            this.btnOk.Location = new System.Drawing.Point(23, 168);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(113, 31);
             this.btnOk.TabIndex = 3;
@@ -158,7 +159,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(177, 131);
+            this.btnCancel.Location = new System.Drawing.Point(176, 168);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(114, 31);
             this.btnCancel.TabIndex = 3;
@@ -166,11 +167,25 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // lstLevelTypes
+            // 
+            this.lstLevelTypes.FormattingEnabled = true;
+            this.lstLevelTypes.Items.AddRange(new object[] {
+            "Blank Level",
+            "Dugeon Level",
+            "100% Random Level",
+            "Perlin Level"});
+            this.lstLevelTypes.Location = new System.Drawing.Point(12, 12);
+            this.lstLevelTypes.Name = "lstLevelTypes";
+            this.lstLevelTypes.Size = new System.Drawing.Size(278, 30);
+            this.lstLevelTypes.TabIndex = 4;
+            // 
             // NewMapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 184);
+            this.ClientSize = new System.Drawing.Size(312, 211);
+            this.Controls.Add(this.lstLevelTypes);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.label5);
@@ -210,5 +225,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.ListBox lstLevelTypes;
     }
 }

@@ -58,9 +58,22 @@ namespace Origins_Remake.Entities
             get { return isMoving; }
         }
 
+        public Point GridPosition
+        {
+            get
+            {
+                return LevelManager.Vector2Tile(Position);
+            }
+        }
+
         public Entity(Vector2 pos)
         {
             this.pos = pos;
+        }
+
+        public Vector2 Origin
+        {
+            get { return Position + new Vector2(width / 2, height / 2); }
         }
 
         public abstract void SetTexture();

@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using OriginsLibrary.Util;
 
 namespace TileEngineLibrary.Tiles
 {
+    [Serializable]
     public class SandTile : Tile
     {
         public SandTile(Point pos)

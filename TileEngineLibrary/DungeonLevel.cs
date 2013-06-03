@@ -5,6 +5,7 @@ using TileEngineLibrary.Tiles;
 
 namespace TileEngineLibrary
 {
+    [Serializable]
     public class DungeonLevel : Level
     {
         Random rand = new Random();
@@ -144,6 +145,7 @@ namespace TileEngineLibrary
         }
     }
 
+    [Serializable]
     struct Room
     {
         public int TileWidth { get { return 32; } }
@@ -175,6 +177,7 @@ namespace TileEngineLibrary
         }
     }
 
+    [Serializable]
     struct Cell
     {
         public int TileWidth { get { return 32; } }

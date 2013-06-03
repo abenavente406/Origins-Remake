@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using TileEngineLibrary;
 using TileEngineLibrary.Tiles;
 using OriginsLibrary.Util;
+using System;
 
 namespace TiledMapEditor
 {
@@ -57,7 +58,7 @@ namespace TiledMapEditor
 
         public static int drawableLayer = 0;
 
-        public static SlfLevel map;
+        public static Level map;
 
         public static int mapHeight = 20;
         public static int mapWidth = 20;
@@ -68,7 +69,7 @@ namespace TiledMapEditor
 
         public static Rectangle MapArea = new Rectangle(0, 0, WIDTH, HEIGHT - 100);
 
-        public static int selectedTile = 0;
+        public static int selectedTile = 1;
 
         MouseState curState;
         KeyboardState prevState;
@@ -107,9 +108,11 @@ namespace TiledMapEditor
 
             basicFont = Content.Load<SpriteFont>("Basic");
             
-            hud = new GUI.HUD(Content);
+            hud = new GUI.HUD(Content, this);
 
             SheetManager.Initialize(this);
+            NoiseGenerator.Initialize(this);
+            Camera.Initialize(this);
         }
 
         protected override void UnloadContent()
@@ -122,19 +125,8 @@ namespace TiledMapEditor
 
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
             Window.Title = "Map Editor - " + mapName;
-
-            prevWheelValue = currWheelValue;
-            currWheelValue = curState.ScrollWheelValue;
-
-            var keyState = Keyboard.GetState();
-
-            curState = Mouse.GetState();
-            prevState = keyState;
+            currWheelValue = InputHandler.MouseState.ScrollWheelValue;
 
             if (state == State.PLAY)
             {
@@ -142,16 +134,23 @@ namespace TiledMapEditor
                 {
                     if (map != null)
                     {
+                        if (InputHandler.KeyDown(Keys.Up)) Camera.Move(new Vector2(0, -2));
+                        if (InputHandler.KeyDown(Keys.Down)) Camera.Move(new Vector2(0, 2));
+                        if (InputHandler.KeyDown(Keys.Left)) Camera.Move(new Vector2(-2, 0));
+                        if (InputHandler.KeyDown(Keys.Right)) Camera.Move(new Vector2(2, 0));
+
                         if (InputHandler.KeyPressed(Keys.Add)) selectedTile++;
+                        if (InputHandler.KeyPressed(Keys.Subtract)) selectedTile--;
+
+                        if (currWheelValue > prevWheelValue) selectedTile++;
+                        if (currWheelValue < prevWheelValue) selectedTile--;
+
+                        selectedTile = selectedTile < 0 ? tileNames.Length - 1 : selectedTile;
                         selectedTile %= tileNames.Length;
 
                         map.Update(gameTime);
 
-                        var tilePos = Vector2Tile(new Vector2(InputHandler.MousePos.X, InputHandler.MousePos.Y));
-
-                        if (tilePos.X < 0 || tilePos.X >= map.WidthInTiles ||
-                            tilePos.Y < 0 || tilePos.Y >= map.HeightInTiles)
-                            return;
+                        var tilePos = Vector2Tile(new Vector2(InputHandler.MousePos.X, InputHandler.MousePos.Y) + Camera.Position);
 
                         if (InputHandler.MouseButtonDown(MouseButton.LeftButton))
                         {
@@ -183,12 +182,10 @@ namespace TiledMapEditor
                         }
                     }
                 }
-                else
-                {
-                    hud.Update();
-                }
+                    hud.Update(gameTime);
             }
 
+            prevWheelValue = currWheelValue;
             base.Update(gameTime);
         }
 
@@ -196,24 +193,31 @@ namespace TiledMapEditor
         {
             GraphicsDevice.Clear(controlColor);
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.Default, RasterizerState.CullNone, null, Camera.GetMatrix());
+            {
+                if (map != null)
+                    map.Draw(spriteBatch, gameTime, new Rectangle((int)Camera.Position.X, (int)Camera.Position.Y, WIDTH, HEIGHT));
+            }
+            spriteBatch.End();
+
             spriteBatch.Begin();
-
-            //Draw the map
-            if (map != null) 
-                map.Draw(spriteBatch, gameTime, new Rectangle(0, 0, map.RealWidth, map.RealHeight));
-
-            spriteBatch.DrawString(basicFont, InputHandler.MousePos.ToString(), new Vector2(10, 10), Color.Black);
-            spriteBatch.DrawString(basicFont, tileNames[selectedTile], new Vector2(10, 10) + new Vector2(basicFont.LineSpacing), Color.White);
-            hud.Draw(spriteBatch);
+            {
+                spriteBatch.DrawString(basicFont, InputHandler.MousePos.ToString(), new Vector2(10, 10), Color.Black);
+                spriteBatch.DrawString(basicFont, tileNames[selectedTile], new Vector2(10, 10) + new Vector2(0, basicFont.LineSpacing), Color.White);
+                hud.Draw(spriteBatch, gameTime);
+            }
+            spriteBatch.End();
 
             base.Draw(gameTime);
-
-            spriteBatch.End();
 
         }
 
         protected Point Vector2Tile(Vector2 pos)
         {
+            if (pos.X == 0) return Point.Zero;
+            if (pos.Y == 0) return Point.Zero;
+
             return new Point((int)pos.X / map.TileWidth, (int)pos.Y / map.TileHeight);
         }
 

@@ -55,7 +55,7 @@ namespace Origins_Remake.Util
             width = gameRef.GraphicsDevice.Viewport.Width;
             height = gameRef.GraphicsDevice.Viewport.Height;
 
-            Zoom = 1.3f;
+            Zoom = 1.15f;
         }
 
         public static void Move(Vector2 amount)

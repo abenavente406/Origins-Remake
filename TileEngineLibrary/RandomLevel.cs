@@ -4,6 +4,7 @@ using TileEngineLibrary.Tiles;
 
 namespace TileEngineLibrary
 {
+    [Serializable]
     public class RandomLevel : Level
     {
         Random rand = new Random();

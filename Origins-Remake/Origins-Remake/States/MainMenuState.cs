@@ -8,6 +8,7 @@ using GameHelperLibrary.Controls;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GameHelperLibrary.Shapes;
+using Origins_Remake.Util;
 
 namespace Origins_Remake.States
 {
@@ -32,6 +33,7 @@ namespace Origins_Remake.States
         ControlManager quitControls;
 
         Texture2D blackOverlay;
+        GaussianBlur blurOverlay;
 
         Label title;
         Animation anim;
@@ -52,6 +54,10 @@ namespace Origins_Remake.States
 
             blackOverlay = new DrawableRectangle(GraphicsDevice,
                 new Vector2(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT), Color.White, true).Texture;
+
+            blurOverlay = new GaussianBlur(gameRef);
+            blurOverlay.ComputeKernel(7, 2.0f);
+
 
             title = new Label();
             title.SpriteFont = Content.Load<SpriteFont>("Fonts\\title");

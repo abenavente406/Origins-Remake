@@ -91,5 +91,12 @@ namespace Origins_Remake.Levels
         {
             return new Vector2(pos.X * currentLevel.TileWidth, pos.Y * currentLevel.TileHeight);
         }
+
+        public static Vector2 GetCenterOfTile(Point tile)
+        {
+            var pos = Tile2Vector(tile);
+            pos += new Vector2(currentLevel.tileWidth / 2, currentLevel.tileHeight / 2);
+            return pos;
+        }
     }
 }

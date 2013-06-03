@@ -27,6 +27,9 @@ namespace Origins_Remake.Entities
             texDown = animDown.Images[0];
             texLeft = animLeft.Images[0];
             texRight = animRight.Images[0];
+
+            width = texUp.Width;
+            height = texUp.Height;
         }
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)

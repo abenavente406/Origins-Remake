@@ -9,12 +9,22 @@ using System.Windows.Forms;
 
 namespace TiledMapEditor.GameForms
 {
-    public partial class NewMapForm : Form
+    public enum LevelType
     {
 
+        Blank,
+        Random,
+        Dungeon,
+        Perlin
+    }
+
+    public partial class NewMapForm : Form
+    {
         public int mapWidth, mapHeight, tileWidth, tileHeight;
 
         public string mapName = "";
+
+        public LevelType levelType = LevelType.Blank;
 
         public NewMapForm()
         {
@@ -34,6 +44,22 @@ namespace TiledMapEditor.GameForms
             mapHeight= Convert.ToInt32(numMapHeight.Value);
             tileWidth = Convert.ToInt32(numTileWidth.Value);
             tileHeight = Convert.ToInt32(numTileHeight.Value);
+
+            switch (lstLevelTypes.SelectedIndex)
+            {
+                case 0:
+                    levelType = LevelType.Blank;
+                    break;
+                case 1:
+                    levelType = LevelType.Dungeon;
+                    break;
+                case 2:
+                    levelType = LevelType.Random;
+                    break;
+                case 3:
+                    levelType = LevelType.Perlin;
+                    break;
+            }
 
             this.DialogResult = DialogResult.OK;
         }

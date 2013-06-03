@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using TileEngineLibrary.Tiles;
 
 namespace TileEngineLibrary
 {
@@ -49,6 +52,11 @@ namespace TileEngineLibrary
             get { return map; }
         }
 
+        public Level(string path)
+        {
+            LoadLevelFromFile(path);
+        }
+
         public Level(int width, int height, int tileWidth, int tileHeight)
         {
             realWidth = width * tileWidth;
@@ -80,6 +88,50 @@ namespace TileEngineLibrary
                     batch.Draw(map[x, y].Texture, map[x, y].RealBounds, Color.White);
                 }
             }
+        }
+
+        public void LoadLevelFromFile(string path)
+        {
+            if (!File.Exists(path))
+                return;
+
+            FileStream stream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Read);
+
+            BinaryFormatter serializer = new BinaryFormatter();
+            Level loadedLevel = (Level)serializer.Deserialize(stream);
+
+            this.realWidth = loadedLevel.RealWidth;
+            this.realHeight = loadedLevel.RealHeight;
+            this.tileWidth = loadedLevel.TileWidth;
+            this.tileHeight = loadedLevel.TileHeight;
+            this.map = loadedLevel.Map;
+            foreach (Tile t in this.map)
+            {
+                if (t.GetType().BaseType == typeof(AnimatedTile))
+                    (t as AnimatedTile).SetTileAnimation();
+                t.SetTileSolid();
+                t.SetTileTexture();
+            }
+
+            stream.Close();
+        }
+        public void SaveLevel(string path)
+        {
+            FileStream stream = File.Create(path);
+
+            BinaryFormatter serializer = new BinaryFormatter();
+            serializer.Serialize(stream, this);
+
+            stream.Close();
+        }
+
+        public void SetTile(Point p, Tile t)
+        {
+            if (p.X < 0 || p.X >= WidthInTiles ||
+                p.Y < 0 || p.Y >= HeightInTiles)
+                return;
+
+            map[p.X, p.Y] = t;
         }
 
         protected Point Vector2Tile(Vector2 pos)

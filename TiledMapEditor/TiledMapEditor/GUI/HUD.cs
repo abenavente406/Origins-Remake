@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TileEngineLibrary;
 using TileEngineLibrary.Tiles;
+using GameHelperLibrary.Controls;
 
 namespace TiledMapEditor.GUI
 {
@@ -15,18 +16,13 @@ namespace TiledMapEditor.GUI
 
         Vector2 position;
 
+        ControlManager Controls { get; set; }
+
         Button btnNewMap;
-        Button btnBackLayer;
-        Button btnCollisionLayer;
-        Button btnFrontLayer;
         Button btnLoadMap;
-        Button btnLoadTile;
         Button btnSaveMap;
 
-        // Button list
-        List<Button> buttons = new List<Button>();
-
-        public HUD(ContentManager content)
+        public HUD(ContentManager content, Game game)
         {
             panel = LoadTexture(content, @"images\panel");
             newMap = LoadTexture(content, "images\\newMapButton");
@@ -37,11 +33,20 @@ namespace TiledMapEditor.GUI
             frontLayer = LoadTexture(content, "images\\frontLayer");
             collisionLayer = LoadTexture(content, "images\\collisionLayerButton");
             previewPanelTexture = LoadTexture(content, "images\\previewpanel");
+            var defaultTex = LoadTexture(content, "images\\defaultButton");
+
+            SpriteFont basicFont = content.Load<SpriteFont>("Basic");
+
+            Controls = new ControlManager(game, basicFont);
 
             // Set HUD position
             position = new Vector2(0, (int)Game1.HEIGHT - panel.Height);
 
-            btnNewMap = new Button(newMap, new Vector2(position.X + 25, position.Y + 25));
+            btnNewMap = new Button(basicFont);
+            btnNewMap.Position = new Vector2(position.X + 25, position.Y + 25);
+            btnNewMap.BackgroundImage = newMap;
+            btnNewMap.Width = newMap.Width;
+            btnNewMap.Height = newMap.Height;
             btnNewMap.OnClick += (o, e) =>
                 {
                     Game1.state = Game1.State.FREEZE;
@@ -60,27 +65,48 @@ namespace TiledMapEditor.GUI
                         Game1.selectedTileNo = 0;
                         Game1.drawOffset = Vector2.Zero;
 
-                        Game1.map = new SlfLevel(null)
+                        switch (newMapForm.levelType)
                         {
-                            realWidth = Game1.mapWidth * 32,
-                            realHeight = Game1.mapHeight * 32,
-                            tileWidth = Game1.tileWidth,
-                            tileHeight = Game1.tileHeight,
-                            map = new Tile[Game1.mapWidth, Game1.mapHeight]
-                        };
+                            case GameForms.LevelType.Blank:
+                                Game1.map = new SlfLevel(null)
+                                {
+                                    realWidth = Game1.mapWidth * 32,
+                                    realHeight = Game1.mapHeight * 32,
+                                    tileWidth = Game1.tileWidth,
+                                    tileHeight = Game1.tileHeight,
+                                    map = new Tile[Game1.mapWidth, Game1.mapHeight]
+                                };
 
-                        for (int x = 0; x < Game1.map.WidthInTiles; x++)
-                            for (int y = 0; y < Game1.map.HeightInTiles; y++)
-                                Game1.map.SetTile(new Point(x, y), new BlackTile(new Point(x, y)));
+                                for (int x = 0; x < Game1.map.WidthInTiles; x++)
+                                    for (int y = 0; y < Game1.map.HeightInTiles; y++)
+                                        Game1.map.SetTile(new Point(x, y), new BlackTile(new Point(x, y)));
+                                break;
+                            case GameForms.LevelType.Dungeon:
+
+                                Game1.map = new DungeonLevel(newMapForm.mapWidth, newMapForm.mapHeight,
+                                    newMapForm.tileWidth, newMapForm.tileHeight);
+                                break;
+                            case GameForms.LevelType.Random:
+                                Game1.map = new RandomLevel(newMapForm.mapWidth, newMapForm.mapHeight,
+                                    newMapForm.tileWidth, newMapForm.tileHeight);
+                                break;
+                            case GameForms.LevelType.Perlin:
+                                Game1.map = new PerlinLevel(newMapForm.mapWidth, newMapForm.tileWidth,
+                                    newMapForm.tileHeight);
+                                break;
+                        }
                         // TODO: load tilesheet
                     }
 
                     Game1.state = Game1.State.PLAY;
                 };
-            btnLoadMap = new Button(loadMap, new Vector2(position.X + 275, position.Y + 25));
+            btnLoadMap = new Button(basicFont);
+            btnLoadMap.Position = new Vector2(position.X + 275, position.Y + 25);
+            btnLoadMap.BackgroundImage = loadMap;
+            btnLoadMap.Width = loadMap.Width;
+            btnLoadMap.Height = loadMap.Height;
             btnLoadMap.OnClick += (o, e) =>
                 {
-                    Game1.state = Game1.State.FREEZE;
 
                     var openFile = new System.Windows.Forms.OpenFileDialog();
 
@@ -88,27 +114,19 @@ namespace TiledMapEditor.GUI
                     openFile.FileName = "";
                     openFile.Filter = "Saved Level Format|*.slf";
 
+                    Game1.map = new RandomLevel(1, 1, 1, 1);
+
                     if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         Game1.map.LoadLevelFromFile(openFile.FileName);
 
-                    Game1.state = Game1.State.PLAY;
                 };
-            btnLoadTile = new Button(loadTiles, new Vector2(position.X + 400, position.Y + 25));
-            btnLoadTile.OnClick += (o, e) =>
-                {
-                    Game1.state = Game1.State.FREEZE;
-
-                    GameForms.NewTileSheetForm frmTileSheet = new GameForms.NewTileSheetForm();
-                    frmTileSheet.ShowDialog();
-
-                    // TODO: Load tilesheet into game
-
-                    Game1.state = Game1.State.PLAY;
-                };
-            btnSaveMap = new Button(saveMap, new Vector2(position.X + 150, position.Y + 25));
+            btnSaveMap = new Button(basicFont);
+            btnSaveMap.Position = new Vector2(position.X + 150, position.Y + 25);
+            btnSaveMap.BackgroundImage = saveMap;
+            btnSaveMap.Width = saveMap.Width;
+            btnSaveMap.Height = saveMap.Height;
             btnSaveMap.OnClick += (o, e) =>
                 {
-                    Game1.state = Game1.State.FREEZE;
 
                     var saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 
@@ -123,31 +141,22 @@ namespace TiledMapEditor.GUI
 
                     saveFileDialog.Dispose();
 
-                    Game1.state = Game1.State.PLAY;
                 };
 
-            buttons.Add(btnNewMap);
-            buttons.Add(btnLoadMap);
-            buttons.Add(btnLoadTile);
-            buttons.Add(btnSaveMap);
+            Controls.Add(btnNewMap);
+            Controls.Add(btnLoadMap);
+            Controls.Add(btnSaveMap);
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            foreach (Button b in buttons)
-            {
-                b.Update();
-            }
+            Controls.Update(gameTime, PlayerIndex.One);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
             spriteBatch.Draw(panel, position, Game1.controlColor);
-
-            foreach (Button b in buttons)
-                b.Draw(spriteBatch);
-
+            Controls.Draw(spriteBatch, gameTime);
         }
 
         Texture2D LoadTexture(ContentManager content, string assetName)

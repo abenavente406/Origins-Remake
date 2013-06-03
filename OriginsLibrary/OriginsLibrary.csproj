@@ -68,6 +68,11 @@
       <Project>{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}</Project>
       <Name>GameHelperLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Origins-Remake\Origins-RemakeContent\Origins-RemakeContent.contentproj">
+      <Project>{B9E5D073-8A04-46E2-897D-449E872D28AA}</Project>
+      <Name>Origins-RemakeContent %28Content%29</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
     <ProjectReference Include="..\PerlinNoise\PerlinNoise.csproj">
       <Project>{4FB770A7-7739-49A5-890F-370ACC223A85}</Project>
       <Name>PerlinNoise</Name>

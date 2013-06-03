@@ -26,6 +26,7 @@ namespace OriginsLibrary.Util
         {
             gameRef = game;
 
+            AddSpriteSheet("allEntities", new SpriteSheet(gameRef.Content.Load<Texture2D>("Sprites\\Entities\\all_entities"), 32, 32, gameRef.GraphicsDevice));
             AddSpriteSheet("player", new SpriteSheet(gameRef.Content.Load<Texture2D>("Sprites\\Entities\\player"), 32, 32, gameRef.GraphicsDevice));
             AddTileSheet("basicTiles", new SpriteSheet(gameRef.Content.Load<Texture2D>("Sprites\\tilesheet_0"), 32, 32, gameRef.GraphicsDevice));
             AddTileSheet("dungeonTiles", new SpriteSheet(gameRef.Content.Load<Texture2D>("Sprites\\dungeon_tiles"), 32, 32, gameRef.GraphicsDevice));
