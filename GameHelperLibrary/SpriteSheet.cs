@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.IO;
 
 namespace GameHelperLibrary {
     public class SpriteSheet
@@ -43,6 +44,32 @@ namespace GameHelperLibrary {
             this.sourceImage = sourceImage;
             imageWidth = sourceImage.Width;
             imageHeight = sourceImage.Height;
+            SpriteWidth = spriteWidth;
+            SpriteHeight = spriteHeight;
+            this.graphics = graphics;
+
+            this.Name = sourceImage.Name;
+        }
+
+        public SpriteSheet(String path, int spriteWidth, int spriteHeight, GraphicsDevice graphics)
+        {
+            FileStream s = null;
+            try
+            {
+                s = File.Open(path, FileMode.Open);
+                this.sourceImage = Texture2D.FromStream(graphics, s);
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("The file could not be found!\n" + ex.ToString());
+            }
+            finally
+            {
+                s.Close();
+                s.Dispose();
+            }
+            imageWidth = this.sourceImage.Width;
+            imageHeight = this.sourceImage.Height;
             SpriteWidth = spriteWidth;
             SpriteHeight = spriteHeight;
             this.graphics = graphics;

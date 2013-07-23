@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileEngineLibrary", "TileEn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OriginsLibrary", "OriginsLibrary\OriginsLibrary.csproj", "{5B08AD71-7F45-427D-96FB-9301168DDD0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerLevelEngine", "LayerLevelEngine\LayerLevelEngine.csproj", "{4893737B-43F0-4B3F-902A-1FA0545351AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -51,6 +53,10 @@ Global
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Debug|x86.Build.0 = Debug|x86
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Release|x86.ActiveCfg = Release|x86
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Release|x86.Build.0 = Release|x86
+		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Debug|x86.ActiveCfg = Debug|x86
+		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Debug|x86.Build.0 = Debug|x86
+		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Release|x86.ActiveCfg = Release|x86
+		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

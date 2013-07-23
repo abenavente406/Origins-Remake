@@ -41,5 +41,15 @@ namespace OriginsLibrary.Util
         {
             spriteSheets.Add(name, sheet);
         }
+
+        public static void AddSpriteSheet(string name, string path, int spriteWidth, int spriteHeight)
+        {
+            spriteSheets.Add(name, new SpriteSheet(path, spriteWidth, spriteHeight, gameRef.GraphicsDevice));
+        }
+
+        public static void AddTileSheet(string name, string path, int spriteWidth, int spriteHeight)
+        {
+            tileSheets.Add(name, new SpriteSheet(path, spriteWidth, spriteHeight, gameRef.GraphicsDevice));
+        }
     }
 }
