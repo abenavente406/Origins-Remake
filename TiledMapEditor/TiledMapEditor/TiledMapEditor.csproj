@@ -60,9 +60,6 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GameHelperLibrary">
-      <HintPath>..\..\..\..\..\..\Git\Origins-Remake\GameHelperLibrary\bin\x86\Release\GameHelperLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -103,6 +100,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GameHelperLibrary\GameHelperLibrary.csproj">
+      <Project>{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}</Project>
+      <Name>GameHelperLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\OriginsLibrary\OriginsLibrary.csproj">
       <Project>{5B08AD71-7F45-427D-96FB-9301168DDD0E}</Project>
       <Name>OriginsLibrary</Name>

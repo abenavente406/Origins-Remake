@@ -1,3 +1,9 @@
+Content\Basic.xnb
+Content\Sprites\dungeon_tiles.xnb
+Content\Sprites\Entities\player.xnb
+Content\Sprites\rock.xnb
+Content\Sprites\tilesheet_0.xnb
+Content\Sprites\tree.xnb
 Content\images\backLayer.xnb
 Content\images\collisionLayerButton.xnb
 Content\images\frontLayer.xnb
@@ -6,15 +12,9 @@ Content\images\loadTileButton.xnb
 Content\images\newMapButton.xnb
 Content\images\panel.xnb
 Content\images\pixel.xnb
+Content\images\previewpanel.xnb
 Content\images\saveMapButton.xnb
 Content\images\solid.xnb
-Content\images\previewpanel.xnb
-Content\Basic.xnb
-Content\Sprites\dungeon_tiles.xnb
-Content\Sprites\Entities\player.xnb
-Content\Sprites\rock.xnb
-Content\Sprites\tilesheet_0.xnb
-Content\Sprites\tree.xnb
 Content\images\defaultButton.xnb
 Content\Fonts\default.xnb
 Content\Fonts\loading.xnb
