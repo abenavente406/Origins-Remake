@@ -30,8 +30,8 @@ namespace Origins_Remake.Entities
             }
             set
             {
-                pos = Vector2.Clamp(value, Vector2.Zero, new Vector2(LevelManager.CurrentLevel.RealWidth - width,
-                    LevelManager.CurrentLevel.RealHeight - height));
+                pos = Vector2.Clamp(value, Vector2.Zero, new Vector2(LevelManager.CurrentLevel.WidthInPixels - width,
+                    LevelManager.CurrentLevel.HeightInPixels - height));
             }
         }
 

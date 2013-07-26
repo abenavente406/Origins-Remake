@@ -13,7 +13,7 @@ namespace Origins_Remake
     /// </summary>
     public class MainGame : Microsoft.Xna.Framework.Game
     {
-        public const string VERSION = "v.0.0.5";
+        public const string VERSION = "v.0.0.6";
         public const int GAME_WIDTH = 800;
         public const int GAME_HEIGHT = 480;
 
@@ -49,7 +49,7 @@ namespace Origins_Remake
             graphics.ApplyChanges();
             IsMouseVisible = true;
 
-            NoiseGenerator.Initialize(this);
+           // NoiseGenerator.Initialize(this);
 
             base.Initialize();
         }

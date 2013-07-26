@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using TileEngineLibrary;
 using Origins_Remake.Util;
+using LayerLevelEngine;
 
 namespace Origins_Remake.Levels
 {
@@ -30,7 +30,7 @@ namespace Origins_Remake.Levels
         {
             gameRef = (MainGame)game;
 
-            currentLevel = new SlfLevel("C:\\Users\\Anthony Benavente\\Desktop\\test.slf");
+            currentLevel = new Level(@"D:\level.slf");
         }
 
         public static void Update(GameTime gameTime)
@@ -40,7 +40,7 @@ namespace Origins_Remake.Levels
 
         public static void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            currentLevel.Draw(batch, gameTime, Camera.ViewPortBounds);
+            currentLevel.Draw(batch, gameTime);
         }
 
         public static bool IsWallTile(Vector2 pos)
@@ -51,35 +51,17 @@ namespace Origins_Remake.Levels
 
         public static bool IsWallTile(Point point)
         {
-            if (point.X < 0 || point.X >= currentLevel.WidthInTiles ||
-                point.Y < 0 || point.Y >= currentLevel.HeightInTiles)
-                return true;
-            else
-                return currentLevel.Map[point.X, point.Y].IsSolid;
+            return false;
         }
 
         public static bool IsWallTile(float x, float y, int width, int height)
         {
-            int atx1 = (int)MathHelper.Clamp((x) / currentLevel.TileWidth, 0, currentLevel.WidthInTiles - 1);
-            int atx2 = (int)MathHelper.Clamp((x + width) / currentLevel.TileWidth, 0, currentLevel.WidthInTiles - 1);
-            int aty1 = (int)MathHelper.Clamp((y + height / 2) / currentLevel.TileHeight, 0, currentLevel.HeightInTiles - 1);
-            int aty2 = (int)MathHelper.Clamp((y + height) / currentLevel.TileHeight, 0, currentLevel.HeightInTiles - 1);
-
-            if (IsTileBlocked(atx1, aty1))
-                return true;
-            if (IsTileBlocked(atx1, aty2))
-                return true;
-            if (IsTileBlocked(atx2, aty1))
-                return true;
-            if (IsTileBlocked(atx2, aty2))
-                return true;
-
             return false;
         }
 
         public static bool IsTileBlocked(int tx, int ty)
         {
-            return currentLevel.Map[tx, ty].IsSolid;
+            return false;
         }
 
         public static Point Vector2Tile(Vector2 pos)
@@ -95,7 +77,7 @@ namespace Origins_Remake.Levels
         public static Vector2 GetCenterOfTile(Point tile)
         {
             var pos = Tile2Vector(tile);
-            pos += new Vector2(currentLevel.tileWidth / 2, currentLevel.tileHeight / 2);
+            pos += new Vector2(currentLevel.TileWidth / 2, currentLevel.TileHeight / 2);
             return pos;
         }
     }

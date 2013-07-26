@@ -7,17 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Origins-RemakeContent", "Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHelperLibrary", "GameHelperLibrary\GameHelperLibrary.csproj", "{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerlinNoise", "PerlinNoise\PerlinNoise.csproj", "{4FB770A7-7739-49A5-890F-370ACC223A85}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiledMapEditorContent", "TiledMapEditor\TiledMapEditorContent\TiledMapEditorContent.contentproj", "{8EA9E583-4FA3-4715-A45D-7C47CE852F2A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiledMapEditor", "TiledMapEditor\TiledMapEditor\TiledMapEditor.csproj", "{C8B66178-69E0-47DE-8EE2-6448F917020D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileEngineLibrary", "TileEngineLibrary\TileEngineLibrary.csproj", "{1295CC68-1030-4275-9F11-AA1B521F3C6F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OriginsLibrary", "OriginsLibrary\OriginsLibrary.csproj", "{5B08AD71-7F45-427D-96FB-9301168DDD0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerLevelEngine", "LayerLevelEngine\LayerLevelEngine.csproj", "{4893737B-43F0-4B3F-902A-1FA0545351AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerMapEditor", "LayerMapEditor\LayerMapEditor\LayerMapEditor.csproj", "{AC17E7D1-F8A8-4D64-A56A-0432319B2655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerMapEditorContent", "LayerMapEditor\LayerMapEditorContent\LayerMapEditorContent.contentproj", "{AD86CA62-F9B4-4E45-9610-07A148BE2002}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,20 +31,6 @@ Global
 		{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}.Debug|x86.Build.0 = Debug|x86
 		{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}.Release|x86.ActiveCfg = Release|x86
 		{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}.Release|x86.Build.0 = Release|x86
-		{4FB770A7-7739-49A5-890F-370ACC223A85}.Debug|x86.ActiveCfg = Debug|x86
-		{4FB770A7-7739-49A5-890F-370ACC223A85}.Debug|x86.Build.0 = Debug|x86
-		{4FB770A7-7739-49A5-890F-370ACC223A85}.Release|x86.ActiveCfg = Release|x86
-		{4FB770A7-7739-49A5-890F-370ACC223A85}.Release|x86.Build.0 = Release|x86
-		{8EA9E583-4FA3-4715-A45D-7C47CE852F2A}.Debug|x86.ActiveCfg = Debug|x86
-		{8EA9E583-4FA3-4715-A45D-7C47CE852F2A}.Release|x86.ActiveCfg = Release|x86
-		{C8B66178-69E0-47DE-8EE2-6448F917020D}.Debug|x86.ActiveCfg = Debug|x86
-		{C8B66178-69E0-47DE-8EE2-6448F917020D}.Debug|x86.Build.0 = Debug|x86
-		{C8B66178-69E0-47DE-8EE2-6448F917020D}.Release|x86.ActiveCfg = Release|x86
-		{C8B66178-69E0-47DE-8EE2-6448F917020D}.Release|x86.Build.0 = Release|x86
-		{1295CC68-1030-4275-9F11-AA1B521F3C6F}.Debug|x86.ActiveCfg = Debug|x86
-		{1295CC68-1030-4275-9F11-AA1B521F3C6F}.Debug|x86.Build.0 = Debug|x86
-		{1295CC68-1030-4275-9F11-AA1B521F3C6F}.Release|x86.ActiveCfg = Release|x86
-		{1295CC68-1030-4275-9F11-AA1B521F3C6F}.Release|x86.Build.0 = Release|x86
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Debug|x86.ActiveCfg = Debug|x86
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Debug|x86.Build.0 = Debug|x86
 		{5B08AD71-7F45-427D-96FB-9301168DDD0E}.Release|x86.ActiveCfg = Release|x86
@@ -57,6 +39,12 @@ Global
 		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Debug|x86.Build.0 = Debug|x86
 		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Release|x86.ActiveCfg = Release|x86
 		{4893737B-43F0-4B3F-902A-1FA0545351AA}.Release|x86.Build.0 = Release|x86
+		{AC17E7D1-F8A8-4D64-A56A-0432319B2655}.Debug|x86.ActiveCfg = Debug|x86
+		{AC17E7D1-F8A8-4D64-A56A-0432319B2655}.Debug|x86.Build.0 = Debug|x86
+		{AC17E7D1-F8A8-4D64-A56A-0432319B2655}.Release|x86.ActiveCfg = Release|x86
+		{AC17E7D1-F8A8-4D64-A56A-0432319B2655}.Release|x86.Build.0 = Release|x86
+		{AD86CA62-F9B4-4E45-9610-07A148BE2002}.Debug|x86.ActiveCfg = Debug|x86
+		{AD86CA62-F9B4-4E45-9610-07A148BE2002}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

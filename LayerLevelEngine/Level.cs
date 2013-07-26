@@ -2,9 +2,13 @@ using System;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using OriginsLibrary.Util;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LayerLevelEngine
 {
+    [Serializable]
     public class Level
     {
         private List<Layer> layers = new List<Layer>();
@@ -15,6 +19,8 @@ namespace LayerLevelEngine
         private int heightInTiles;
         private int tileWidth;
         private int tileHeight;
+
+        private bool[,] collisionMap;
 
         public int WidthInTiles
         {
@@ -56,9 +62,78 @@ namespace LayerLevelEngine
             get { return tileSheets.Count; }
         }
 
-        public Level()
+        public Level(string path)
         {
+            Load(path);
+        }
 
+        public Level(int widthInTiles, int heightInTiles, int tileWidth, int tileHeight)
+        {
+            this.widthInTiles = widthInTiles;
+            this.heightInTiles = heightInTiles;
+            this.tileWidth = tileWidth;
+            this.tileHeight = tileHeight;
+            
+            // -------------------------------
+            // Start temp code
+            // -------------------------------
+            Random rand = new Random();
+
+            Tile[,] layer1 = new Tile[widthInTiles, heightInTiles];
+            AddTileSheet(@"D:\grass.png");
+            AddTileSheet(@"D:\watergrass.png");
+            AddTileSheet(@"D:\dirt.png");
+
+            /* Random level generation */
+            //for (int x = 0; x < widthInTiles; x++)
+            //{
+            //    for (int y = 0; y < heightInTiles; y++)
+            //    {
+            //        int randGrass = rand.Next();
+
+            //        switch (randGrass % 4)
+            //        {
+            //            case 0:
+            //                layer1[x, y] = new Tile(this, 0, 32, 32, 1, 3, x * tileWidth, y * tileHeight);
+            //                break;
+            //            case 1:
+            //                layer1[x, y] = new Tile(this, 0, 32, 32, 0, 5, x * tileWidth, y * tileHeight);
+            //                break;
+            //            case 2:
+            //                layer1[x, y] = new Tile(this, 0, 32, 32, 1, 5, x * tileWidth, y * tileHeight);
+            //                break;
+            //            case 3:
+            //                layer1[x, y] = new Tile(this, 0, 32, 32, 2, 5, x * tileWidth, y * tileHeight);
+            //                break;
+            //        }
+            //    }
+            //}
+
+            /* Noise level generation */
+            Noise noise = new Noise(new Random(), 2.0f, widthInTiles, heightInTiles);
+            noise.initialise();
+
+            for (int x = 0; x < WidthInTiles; x++)
+            {
+                for (int y = 0; y < HeightInTiles; y++)
+                {
+                    float perlin = noise.getNoise(x, y);
+                    if (perlin > 0.8f)
+                        layer1[x, y] = new Tile(this, 1, tileWidth, tileHeight, 1, 5, x * tileWidth, y * tileHeight);
+                    else if (perlin <= .8f && perlin >= .2f)
+                        layer1[x, y] = new Tile(this, 2, tileWidth, tileHeight, 1, 5, x * tileWidth, y * tileHeight);
+                    else
+                        layer1[x, y] = new Tile(this, 0, tileWidth, tileHeight, 1, 5, x * tileWidth, y * tileHeight);
+                }
+            }
+
+            noise.printAsCSV();
+            layers.Add(new Layer(this, layer1));
+            // --------------------------------
+            // End temp code
+            // --------------------------------- 
+
+            collisionMap = new bool[widthInTiles, heightInTiles];
         }
 
         public Level(Level level)
@@ -67,6 +142,10 @@ namespace LayerLevelEngine
             this.layers = level.layers;
             this.tileSheetPaths = level.tileSheetPaths;
             this.tileSheets = level.tileSheets;
+            this.widthInTiles = level.widthInTiles;
+            this.heightInTiles = level.heightInTiles;
+            this.tileWidth = level.tileWidth;
+            this.tileHeight = level.tileHeight;
         }
 
         private void CleanSlate()
@@ -101,6 +180,36 @@ namespace LayerLevelEngine
         public void Draw(SpriteBatch batch, GameTime gameTime)
         {
             layers.ForEach(l => l.Draw(batch, gameTime));
+        }
+
+        public void Save(string path)
+        {
+            FileStream stream = File.Open(path, FileMode.OpenOrCreate);
+            BinaryFormatter writer = new BinaryFormatter();
+            writer.Serialize(stream, this);
+            stream.Close();
+        }
+
+        public void Load(string path)
+        {
+            FileStream stream = File.Open(path, FileMode.Open);
+            BinaryFormatter serializer = new BinaryFormatter();
+
+            var level = (Level)(serializer.Deserialize(stream));
+
+            CleanSlate();
+            this.layers = level.layers;
+            this.tileSheetPaths = level.tileSheetPaths;
+            this.tileSheets = level.tileSheets;
+            this.widthInTiles = level.widthInTiles;
+            this.heightInTiles = level.heightInTiles;
+            this.tileWidth = level.tileWidth;
+            this.tileHeight = level.tileHeight;
+
+            foreach (Layer l in layers)
+                l.LoadLayer();
+
+            stream.Close();
         }
     }
 }

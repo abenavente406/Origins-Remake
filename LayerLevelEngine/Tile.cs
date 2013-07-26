@@ -7,7 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LayerLevelEngine
 {
-    public abstract class Tile
+    [Serializable]
+    public class Tile
     {
         private Level parent;
         private Vector2 pos;
@@ -19,17 +20,31 @@ namespace LayerLevelEngine
         private int sourceX;
         private int sourceY;
 
-        public Tile(int width, int height)
-            : this(width, height, 0, 0)
+        private TileSheet sheet;
+
+        public Tile(Level level, int sheetId, int width, int height, int x, int y)
+            : this(level, sheetId, width, height, 0, 0, x, y)
         {
         }
 
-        public Tile(int width, int height, int sourceX, int sourceY)
+        public Tile(Level level, int sheetId, int width, int height, int sourceX, int sourceY, int x, int y)
         {
             this.width = width;
             this.height = height;
             this.sourceX = sourceX;
             this.sourceY = sourceY;
+
+            this.parent = level;
+            this.pos = new Vector2(x, y);
+            this.sheetId = sheetId;
+
+            LoadTileSheet();
+        }
+
+        public void LoadTileSheet()
+        {
+            this.sheet = parent.GetTileSheet(this.sheetId);
+            this.sheet.LoadTextures();
         }
 
         public virtual void Update(GameTime gameTime)
@@ -37,8 +52,9 @@ namespace LayerLevelEngine
             return;
         }
 
-        public virtual void Draw(SpriteBatch batch, GameTime gameTime)
+        public virtual void Draw(SpriteBatch batch, GameTime gameTime, float opacity)
         {
+            batch.Draw(sheet.GetTexture(sourceX, sourceY), pos, Color.White * opacity);
         }
     }
 }

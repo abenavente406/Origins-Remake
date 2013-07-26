@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Origins_Remake.Util;
 using Origins_Remake.Entities;
 using GameHelperLibrary.Controls;
+using OriginsLibrary.Util;
 
 namespace Origins_Remake.States
 {
@@ -49,7 +50,8 @@ namespace Origins_Remake.States
         public override void LargeLoadContent(object sender)
         {
             levelManager = new LevelManager(gameRef);
-            Camera.Initialize(gameRef, Vector2.Zero, LevelManager.CurrentLevel);
+            Camera.Initialize(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT, 
+                LevelManager.CurrentLevel.WidthInPixels, LevelManager.CurrentLevel.HeightInPixels);
 
             entityManager = new EntityManager(gameRef);
 
@@ -178,7 +180,7 @@ namespace Origins_Remake.States
                 var spriteBatch = gameRef.spriteBatch;
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                    DepthStencilState.Default, RasterizerState.CullNone, null, Camera.GetTransformation());
+                    DepthStencilState.Default, RasterizerState.CullNone, null, Camera.GetTransform());
 
                 LevelManager.Draw(spriteBatch, gameTime);
                 EntityManager.Draw(spriteBatch, gameTime);

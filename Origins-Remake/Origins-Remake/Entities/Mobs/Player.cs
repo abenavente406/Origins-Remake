@@ -38,7 +38,7 @@ namespace Origins_Remake.Entities.Mobs
             Vector2 newPos = Vector2.Zero;
             HandleInput(InputHandler.GamePadConnected, ref newPos);
             Move(Position.X + newPos.X, Position.Y + newPos.Y);
-            Camera.SetPosition(Position - new Vector2(Camera.ViewPortBounds.Width / 2, Camera.ViewPortBounds.Height / 2));
+            Camera.SetPosition(Position - new Vector2(Camera.ViewWidth / 2, Camera.ViewHeight / 2));
         }
 
         private void HandleInput(bool gamePadConnected, ref Vector2 newPos)

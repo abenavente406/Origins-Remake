@@ -84,11 +84,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="States\BaseGameState.cs" />
-    <Compile Include="Util\Camera.cs" />
     <Compile Include="States\GameplayState.cs" />
     <Compile Include="States\LoadingState.cs" />
     <Compile Include="States\MainMenuState.cs" />
-    <Compile Include="Util\GaussianBlur.cs" />
     <Compile Include="Util\Pathfinder.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,17 +100,13 @@
       <Project>{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}</Project>
       <Name>GameHelperLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LayerLevelEngine\LayerLevelEngine.csproj">
+      <Project>{4893737B-43F0-4B3F-902A-1FA0545351AA}</Project>
+      <Name>LayerLevelEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\OriginsLibrary\OriginsLibrary.csproj">
       <Project>{5B08AD71-7F45-427D-96FB-9301168DDD0E}</Project>
       <Name>OriginsLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\PerlinNoise\PerlinNoise.csproj">
-      <Project>{4FB770A7-7739-49A5-890F-370ACC223A85}</Project>
-      <Name>PerlinNoise</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TileEngineLibrary\TileEngineLibrary.csproj">
-      <Project>{1295CC68-1030-4275-9F11-AA1B521F3C6F}</Project>
-      <Name>TileEngineLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Origins-RemakeContent\Origins-RemakeContent.contentproj">
       <Project>{B9E5D073-8A04-46E2-897D-449E872D28AA}</Project>
