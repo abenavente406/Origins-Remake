@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Origins_Remake.States;
 using Origins_Remake.Util;
-using OriginsLibrary.Util;
+using OriginsLib.Util;
+using OriginsLib.TileEngine;
 
 namespace Origins_Remake
 {
@@ -23,6 +24,8 @@ namespace Origins_Remake
         public SpriteBatch spriteBatch;
 
         GameStateManager manager;
+
+        Engine engine = new Engine(32, 32);
 
         public MainGame()
         {
@@ -48,6 +51,8 @@ namespace Origins_Remake
             graphics.PreferredBackBufferHeight = GAME_HEIGHT;
             graphics.ApplyChanges();
             IsMouseVisible = true;
+
+            Config.Initialize(this);
 
            // NoiseGenerator.Initialize(this);
 

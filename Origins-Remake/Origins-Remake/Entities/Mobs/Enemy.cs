@@ -121,7 +121,7 @@ namespace Origins_Remake.Entities.Mobs
 
         private Vector2 determineMoveDirection(Player player)
         {
-            List<Vector2> path = Pathfinder.FindPath(LevelManager.Vector2Tile(Origin), LevelManager.Vector2Tile(player.Origin));
+            List<Vector2> path = Pathfinder.FindPath(LevelManager.Vector2Cell(Origin), LevelManager.Vector2Cell(player.Origin));
 
             if (path.Count < 1)
                 return Vector2.Zero;

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Origins_Remake.Util;
 using Origins_Remake.Entities;
 using GameHelperLibrary.Controls;
-using OriginsLibrary.Util;
+using OriginsLib.Util;
 
 namespace Origins_Remake.States
 {
@@ -50,8 +50,9 @@ namespace Origins_Remake.States
         public override void LargeLoadContent(object sender)
         {
             levelManager = new LevelManager(gameRef);
-            Camera.Initialize(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT, 
-                LevelManager.CurrentLevel.WidthInPixels, LevelManager.CurrentLevel.HeightInPixels);
+            Camera.Initialize(Vector2.Zero, new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT),
+                new Vector2(LevelManager.CurrentLevel.WidthInPixels, LevelManager.CurrentLevel.HeightInPixels));
+            Camera.MaxClamp -= new Vector2(Camera.View.Width / 2, Camera.View.Height / 2);
 
             entityManager = new EntityManager(gameRef);
 

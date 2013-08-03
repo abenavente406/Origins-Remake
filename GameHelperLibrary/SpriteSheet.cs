@@ -31,6 +31,11 @@ namespace GameHelperLibrary {
         public int Height { get { return imageHeight; } }
 
         public string Name { get; set; }
+
+        public Texture2D Image
+        {
+            get { return sourceImage; }
+        }
         #endregion
 
         /// <summary>

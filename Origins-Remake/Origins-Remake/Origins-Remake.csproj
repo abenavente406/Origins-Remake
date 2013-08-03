@@ -100,13 +100,9 @@
       <Project>{0FC0A4DE-BC3D-4B16-9C78-6AB679C0BC3D}</Project>
       <Name>GameHelperLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\LayerLevelEngine\LayerLevelEngine.csproj">
-      <Project>{4893737B-43F0-4B3F-902A-1FA0545351AA}</Project>
-      <Name>LayerLevelEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\OriginsLibrary\OriginsLibrary.csproj">
-      <Project>{5B08AD71-7F45-427D-96FB-9301168DDD0E}</Project>
-      <Name>OriginsLibrary</Name>
+    <ProjectReference Include="..\..\OriginsLib\OriginsLib.csproj">
+      <Project>{7C836DB2-CEAF-44DA-A8BA-F19858681AC0}</Project>
+      <Name>OriginsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Origins-RemakeContent\Origins-RemakeContent.contentproj">
       <Project>{B9E5D073-8A04-46E2-897D-449E872D28AA}</Project>

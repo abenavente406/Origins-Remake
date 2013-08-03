@@ -1,0 +1,62 @@
+﻿<Window x:Class="LayerMapEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="768" Width="1366" WindowState="Maximized">
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="CommandBinding_Exit" />
+        <CommandBinding Command="New" Executed="CommandBinding_New" />
+        <CommandBinding Command="Open" Executed="CommandBinding_Open" />
+        <CommandBinding Command="Save" Executed="CommandBinding_Save" />
+        <CommandBinding Command="Undo" Executed="CommandBinding_Undo" />
+        <CommandBinding Command="Redo" Executed="CommandBinding_Redo" />
+        <CommandBinding Command="Cut" Executed="CommandBinding_Cut" />
+        <CommandBinding Command="Copy" Executed="CommandBinding_Copy" />
+        <CommandBinding Command="Paste" Executed="CommandBinding_Paste" />
+    </Window.CommandBindings>
+    <Grid>
+        <DockPanel>
+            <Menu IsMainMenu="True" DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New Map" Command="New"></MenuItem>
+                    <MenuItem Header="_Load Map" Command="Open"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="_Save Map" Command="Save"></MenuItem>
+                    <Separator/>
+                    <MenuItem Header="_Exit" Command="Close"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Undo" Command="Undo">
+                        <MenuItem.Icon>
+                            <Image Width="16" Height="16" Source="Images/undo.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="_Redo" Command="Redo">
+                        <MenuItem.Icon>
+                            <Image Width="16" Height="16" Source="Images/redo.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="_Cut" Command="Cut">
+                        <MenuItem.Icon>
+                            <Image Width="16" Height="16" Source="Images/cut.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="_Copy" Command="Copy">
+                        <MenuItem.Icon>
+                            <Image Width="16" Height="16" Source="Images/copy.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="_Paste" Command="Paste">
+                        <MenuItem.Icon>
+                            <Image Width="16" Height="16" Source="Images/paste.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_View">
+                </MenuItem>
+                <MenuItem Header="_Layer" />
+                <MenuItem Header="_Help" />
+            </Menu>
+        </DockPanel>
+    </Grid>
+</Window>

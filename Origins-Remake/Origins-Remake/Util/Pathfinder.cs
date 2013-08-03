@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Origins_Remake.Levels;
-using LayerLevelEngine;
+using OriginsLib.TileEngine;
 
 namespace Origins_Remake.Util
 {
@@ -37,7 +37,7 @@ namespace Origins_Remake.Util
         private static List<SearchNode> openList = new List<SearchNode>();
         private static List<SearchNode> closedList = new List<SearchNode>();
 
-        public Pathfinder(Level map)
+        public Pathfinder(TileMap map)
         {
             levelWidth = map.WidthInTiles;
             levelHeight = map.HeightInTiles;
@@ -46,7 +46,7 @@ namespace Origins_Remake.Util
             InitializeSearchNodes(map);
         }
 
-        public static void InitializeSearchNodes(Level map)
+        public static void InitializeSearchNodes(TileMap map)
         {
             for (int x = 0; x < levelWidth; x++)
             {
@@ -55,8 +55,8 @@ namespace Origins_Remake.Util
                     SearchNode node = new SearchNode()
                     {
                         Position = new Point(x, y),
-                        Walkable = !LevelManager.IsWallTile(new Vector2(x * LevelManager.CurrentLevel.TileWidth,
-                            y * LevelManager.CurrentLevel.TileHeight))
+                        Walkable = !LevelManager.IsWallTile(new Vector2(x * Engine.TileWidth,
+                            y * Engine.TileHeight))
                     };
 
                     if (node.Walkable == true)

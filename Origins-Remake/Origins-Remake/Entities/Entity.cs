@@ -62,7 +62,7 @@ namespace Origins_Remake.Entities
         {
             get
             {
-                return LevelManager.Vector2Tile(Position);
+                return LevelManager.Vector2Cell(Position);
             }
         }
 
@@ -158,7 +158,7 @@ namespace Origins_Remake.Entities
 
         protected Point AdjacentPoint(Vector2 pos)
         {
-            Point result = LevelManager.Vector2Tile(pos);
+            Point result = LevelManager.Vector2Cell(pos);
             switch (dir)
             {
                 case 0:

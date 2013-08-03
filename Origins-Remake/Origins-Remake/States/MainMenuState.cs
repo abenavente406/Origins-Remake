@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GameHelperLibrary.Shapes;
 using Origins_Remake.Util;
-using OriginsLibrary.Util;
+using OriginsLib.Util;
 
 namespace Origins_Remake.States
 {
