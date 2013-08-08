@@ -113,7 +113,9 @@ namespace Origins_Remake.States
             mainTarget.Dispose();
             target1.Dispose();
             target2.Dispose();
-            
+
+            Config.SetLastLogin(Config.currentlyPlaying);
+
             base.UnloadContent();
         }
 

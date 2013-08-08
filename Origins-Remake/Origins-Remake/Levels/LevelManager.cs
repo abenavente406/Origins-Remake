@@ -29,7 +29,7 @@ namespace Origins_Remake.Levels
             gameRef = (MainGame)game;
 
             currentLevel = new TileMap(0, 0);
-            currentLevel.Load(@"D:\level1.slf");
+            currentLevel.Load(@"D:\test_level.slf");
         }
 
         public static void Update(GameTime gameTime)

@@ -23,8 +23,9 @@ namespace OriginsLib.Util
         public static bool FULL_SCREEN = false;
         public static float SCALE = 1.0f;
         public static string lastLogin;
+        public static string currentlyPlaying;
 
-        static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\My Games\\";
+        static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\My Games\\Origins";
         #endregion
 
         #region Properties
@@ -63,6 +64,9 @@ namespace OriginsLib.Util
         public static void SetLastLogin(string name)
         {
             lastLogin = name;
+
+            if (!Directory.Exists(filePath))
+                Directory.CreateDirectory(filePath);
 
             var fs = File.Create(Path.Combine(filePath, @"last_login"));
             StreamWriter writer = new StreamWriter(fs);

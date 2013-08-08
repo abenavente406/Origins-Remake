@@ -6,6 +6,7 @@ namespace Origins_Remake.Entities
 {
     public abstract class Entity
     {
+        protected string name;
         protected Vector2 pos;
         protected bool isMoving = false;
         protected int dir = 0;

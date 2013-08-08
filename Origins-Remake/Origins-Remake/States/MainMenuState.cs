@@ -128,7 +128,7 @@ namespace Origins_Remake.States
             LinkLabel startGame = new LinkLabel(2) { Name = "lnklblNewGame", Text = "Start" };
             startGame.Position = new Vector2(prompt.Position.X, name.Position.Y + 44);
             startGame.OnMouseIn += LinkLabel_OnMouseIn;
-            startGame.Selected += (o, e) => { SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager))); };
+            startGame.Selected += (o, e) => { Config.currentlyPlaying = newGameControls[1].Text;  SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager))); };
             startGame.Effect = ControlEffect.PULSE;
 
             LinkLabel cancel = new LinkLabel(3) { Name = "lnklblCancel", Text = "Cancel" };

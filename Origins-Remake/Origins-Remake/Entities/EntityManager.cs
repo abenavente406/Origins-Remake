@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Origins_Remake.Entities.Mobs;
 using Origins_Remake.Levels;
 using Origins_Remake.Util;
+using System;
 
 namespace Origins_Remake.Entities
 {
@@ -64,6 +65,11 @@ namespace Origins_Remake.Entities
                         e.DrawPathToPlayer(batch, Player);
 #endif
                 });
+        }
+
+        public static double GetAngleToPlayer(Entity from)
+        {
+            return Math.Atan((EntityManager.Player.Position - from.Position).Y / (EntityManager.Player.Position - from.Position).X);
         }
     }
 }
