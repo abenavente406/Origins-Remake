@@ -7,6 +7,7 @@ using GameHelperLibrary.Controls;
 using System;
 using LayerMapEditor.Forms;
 using OriginsLib.TileEngine;
+using System.Reflection;
 
 namespace LayerMapEditor
 {
@@ -52,6 +53,7 @@ namespace LayerMapEditor
         public int SelectedTileSetIndex
         {
             get { return selectedTileSetIndex; }
+            set { selectedTileSetIndex = value; }
         }
 
         public bool ShowCollisionMap

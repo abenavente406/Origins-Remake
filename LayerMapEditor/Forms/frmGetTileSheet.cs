@@ -47,15 +47,28 @@ namespace LayerMapEditor.Forms
             openFileDlg.Multiselect = false;
             DialogResult result = openFileDlg.ShowDialog();
 
+
             if (result == System.Windows.Forms.DialogResult.OK)
             {
+                var filename = openFileDlg.FileName.Split('\\');
                 var fs = File.Open(openFileDlg.FileName, FileMode.Open);
                 var tileSet = new TileSet(Texture2D.FromStream(gameRef.GraphicsDevice, fs),
-                    Engine.TileWidth, Engine.TileHeight, openFileDlg.FileName);
+                    Engine.TileWidth, Engine.TileHeight, filename[filename.Length - 2] + "\\" + filename[filename.Length - 1]);
                 gameRef.level.AddTileSet(tileSet);
                 lstTileSheets.Items.Add(
                     gameRef.level.TileSets[gameRef.level.TileSets.Count - 1].Path
                 );
+            }
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (gameRef.level.TileSets.Count > 0)
+            {
+                gameRef.hud.SelectedTileIndex = 0;
+                gameRef.hud.SelectedTileSetIndex--;
+                gameRef.level.TileSets.RemoveAt(lstTileSheets.SelectedIndex);
+                lstTileSheets.Items.RemoveAt(lstTileSheets.SelectedIndex);
             }
         }
     }

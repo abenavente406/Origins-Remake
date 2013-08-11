@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using OriginsLib.Util;
+using System.Reflection;
 
 namespace OriginsLib.TileEngine
 {
@@ -106,7 +107,7 @@ namespace OriginsLib.TileEngine
         {
             get { return path == null ? "No path found. {Image:" + image.Name + 
                 ", Width In Tiles: " + WidthInTiles + ", Height In Tiles: " + heightInTiles + "}": path; }
-            set { path = value; }
+            set { path = Assembly.GetExecutingAssembly().Location + "\\" +  value; }
         }
 
         #endregion

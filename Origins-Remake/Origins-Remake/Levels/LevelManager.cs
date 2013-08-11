@@ -29,7 +29,7 @@ namespace Origins_Remake.Levels
             gameRef = (MainGame)game;
 
             currentLevel = new TileMap(0, 0);
-            currentLevel.Load(@"D:\test_level.slf");
+            currentLevel.Load(@"test_level.slf");
         }
 
         public static void Update(GameTime gameTime)
@@ -43,22 +43,36 @@ namespace Origins_Remake.Levels
 
         public static bool IsWallTile(Vector2 pos)
         {
-            return false;
+            return IsTileBlocked((int)pos.X, (int)pos.Y);
         }
 
         public static bool IsWallTile(Point point)
         {
-            return false;
+            return IsTileBlocked(point.X, point.Y);
         }
 
         public static bool IsWallTile(float x, float y, int width, int height)
         {
+            int atx1 = (int)MathHelper.Clamp((x) / Engine.TileWidth, 0, currentLevel.WidthInTiles - 1);
+            int atx2 = (int)MathHelper.Clamp((x + width) / Engine.TileWidth, 0, currentLevel.WidthInTiles - 1);
+            int aty1 = (int)MathHelper.Clamp((y + height / 2) / Engine.TileHeight, 0, currentLevel.HeightInTiles - 1);
+            int aty2 = (int)MathHelper.Clamp((y + height) / Engine.TileHeight, 0, currentLevel.HeightInTiles - 1);
+
+            if (IsTileBlocked(atx1, aty1))
+                return true;
+            if (IsTileBlocked(atx1, aty2))
+                return true;
+            if (IsTileBlocked(atx2, aty1))
+                return true;
+            if (IsTileBlocked(atx2, aty2))
+                return true;
+
             return false;
         }
 
         public static bool IsTileBlocked(int tx, int ty)
         {
-            return false;
+            return currentLevel.GetIsCollision(tx, ty);
         }
 
         public static Point Vector2Cell(Vector2 pos)

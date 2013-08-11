@@ -6,7 +6,8 @@ namespace Origins_Remake.Entities
 {
     public abstract class Entity
     {
-        protected string name;
+        #region Fields
+        protected string name = "";
         protected Vector2 pos;
         protected bool isMoving = false;
         protected int dir = 0;
@@ -22,7 +23,21 @@ namespace Origins_Remake.Entities
         protected bool noClip = false;
         protected bool godMode = false;
         protected bool superSpeed = false;
-        
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// The name of the entity
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        /// <summary>
+        /// Real world position of the entity
+        /// </summary>
         public Vector2 Position
         {
             get
@@ -36,11 +51,17 @@ namespace Origins_Remake.Entities
             }
         }
 
+        /// <summary>
+        /// Sprite width of the entity
+        /// </summary>
         public int Width
         {
             get { return width; }
         }
 
+        /// <summary>
+        /// Sprite height of the entity
+        /// </summary>
         public int Height
         {
             get { return height; }
@@ -54,11 +75,17 @@ namespace Origins_Remake.Entities
             get { return dir; }
         }
 
+        /// <summary>
+        /// Gets if the entity is in motion
+        /// </summary>
         public bool IsMoving
         {
             get { return isMoving; }
         }
 
+        /// <summary>
+        /// Position of the player by tile
+        /// </summary>
         public Point GridPosition
         {
             get
@@ -67,17 +94,31 @@ namespace Origins_Remake.Entities
             }
         }
 
+        /// <summary>
+        /// Gets the center of the entity
+        /// </summary>
+        public Vector2 Origin
+        {
+            get { return Position + new Vector2(width / 2, height / 2); }
+        }
+        #endregion
+
+        #region Initialization
+
+        /// <summary>
+        /// Initializes a new entity
+        /// </summary>
+        /// <param name="pos">Starting position</param>
         public Entity(Vector2 pos)
         {
             this.pos = pos;
         }
 
-        public Vector2 Origin
-        {
-            get { return Position + new Vector2(width / 2, height / 2); }
-        }
-
         public abstract void SetTexture();
+
+        #endregion
+
+        #region Update / Draw
         public abstract void Update(GameTime gameTime);
 
         public virtual void Draw(SpriteBatch batch, GameTime gameTime)
@@ -98,7 +139,13 @@ namespace Origins_Remake.Entities
                     break;
             }
         }
+        #endregion
 
+        #region Helper Methods
+        /// <summary>
+        /// Moves the entity using a new position
+        /// </summary>
+        /// <param name="newPos"></param>
         protected void Move(Vector2 newPos)
         {
             if (!noClip)
@@ -142,6 +189,11 @@ namespace Origins_Remake.Entities
             }
         }
 
+        /// <summary>
+        /// Moves the player using x and y coords
+        /// </summary>
+        /// <param name="testX"></param>
+        /// <param name="testY"></param>
         protected void Move(float testX, float testY)
         {
             if (!noClip)
@@ -157,6 +209,11 @@ namespace Origins_Remake.Entities
                 Position = new Vector2(testX, testY);
         }
 
+        /// <summary>
+        /// Gets the adjacent tile based on the direction the entity is facing
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         protected Point AdjacentPoint(Vector2 pos)
         {
             Point result = LevelManager.Vector2Cell(pos);
@@ -177,5 +234,6 @@ namespace Origins_Remake.Entities
             }
             return result;
         }
+        #endregion
     }
 }

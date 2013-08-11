@@ -35,12 +35,12 @@ namespace GameHelperLibrary.Shapes
         private Texture2D SetTexture(bool filled)
         {
             var result = new Texture2D(graphics, Width, Height);
-            Color[,] data = new Color[Width, Height];
+            Color[,] data = new Color[Height, Width];
             Color[] data1d = new Color[Width * Height];
 
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
-                    data[x, y] = Color.Transparent;
+                    data[y, x] = Color.Transparent;
 
             if (filled)
                 for (int i = 0; i < data1d.Length; i++)
@@ -50,7 +50,7 @@ namespace GameHelperLibrary.Shapes
                     for (int y = 0; y < Height; y++)
                         if (x == 0 || y == 0 || x == Width - 1 || y == Height - 1)
                         {
-                            data[x, y] = Color.White;
+                            data[y, x] = Color.White;
                             data1d[y * Width + x] = Color.White;
                         }
             result.SetData<Color>(data1d);

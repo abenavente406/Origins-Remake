@@ -81,9 +81,6 @@ namespace LayerMapEditor
 
             level = new TileMap(30, 30);
 
-            var tileSet = new TileSet("D:\\grass.png", 32, 32);
-            level.AddTileSet(tileSet);
-
             for (int i = 0; i < 3; i++)
                 level.AddLayer(new MapLayer(level));
 

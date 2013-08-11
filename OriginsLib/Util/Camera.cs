@@ -79,7 +79,7 @@ namespace OriginsLib.Util
         /// <param name="maxClamp">Max position the camera can be at</param>
         public static void Initialize(Vector2 startPos, Rectangle view, Vector2 maxClamp)
         {
-            MaxClamp = maxClamp;
+            MaxClamp = maxClamp - new Vector2(view.Width / 2, view.Height / 2);
             Position = Vector2.Zero;
             Camera.startPos = startPos;
 

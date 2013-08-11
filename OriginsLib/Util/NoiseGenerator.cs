@@ -120,7 +120,7 @@ namespace OriginsLib.Util
 
         public float getNoise(int x, int y)
         {
-            return grid_[x, y];
+            return grid_[y, x];
         }
 
         public double nextGaussian()

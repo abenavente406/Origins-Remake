@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Origins_Remake.Levels;
 using OriginsLib.TileEngine;
 
 namespace Origins_Remake.Util
@@ -14,40 +11,37 @@ namespace Origins_Remake.Util
     public class SearchNode
     {
         public SearchNode Parent { get; set; }
-        public Point Position { get; set; }
-        public bool Walkable { get; set; }
-
         public bool InOpenList { get; set; }
         public bool InClosedList { get; set; }
-
         public float DistanceToGoal { get; set; }
         public float DistanceTraveled { get; set; }
-
+        public Point Position { get; set; }
+        public bool Walkable { get; set; }
         public SearchNode[] Neighbors { get; set; }
-
     }
 
     public class Pathfinder
     {
         private static SearchNode[,] searchNodes;
 
-        private static int levelWidth;
-        private static int levelHeight;
-
         private static List<SearchNode> openList = new List<SearchNode>();
         private static List<SearchNode> closedList = new List<SearchNode>();
+
+        private static int levelWidth;
+        private static int levelHeight;
 
         public Pathfinder(TileMap map)
         {
             levelWidth = map.WidthInTiles;
             levelHeight = map.HeightInTiles;
 
-            searchNodes = new SearchNode[levelWidth, levelHeight];
             InitializeSearchNodes(map);
         }
 
-        public static void InitializeSearchNodes(TileMap map)
+        private static void InitializeSearchNodes(TileMap map)
         {
+            searchNodes = new SearchNode[levelHeight, levelWidth];
+
             for (int x = 0; x < levelWidth; x++)
             {
                 for (int y = 0; y < levelHeight; y++)
@@ -55,59 +49,99 @@ namespace Origins_Remake.Util
                     SearchNode node = new SearchNode()
                     {
                         Position = new Point(x, y),
-                        Walkable = !LevelManager.IsWallTile(new Vector2(x * Engine.TileWidth,
-                            y * Engine.TileHeight))
+                        Walkable = !map.GetIsCollision(x, y)
                     };
 
-                    if (node.Walkable == true)
+                    if (node.Walkable)
                     {
                         node.Neighbors = new SearchNode[4];
-                        searchNodes[x, y] = node;
+                        searchNodes[y, x] = node;
                     }
                 }
             }
 
             for (int x = 0; x < levelWidth; x++)
             {
+
                 for (int y = 0; y < levelHeight; y++)
                 {
-                    SearchNode node = searchNodes[x, y];
 
-                    if (node == null || !node.Walkable)
+                    SearchNode node = searchNodes[y, x];
+
+
+
+                    // We only want to look at the nodes that 
+
+                    // our enemies can walk on.
+
+                    if (node == null || node.Walkable == false)
+                    {
+
                         continue;
 
-                    Point[] neighbors = new Point[4] 
-                    {
-                        new Point(x, y - 1),
-                        new Point(x, y + 1),
-                        new Point(x - 1, y),
-                        new Point(x + 1, y)
-                    };
+                    }
+
+
+
+                    // An array of all of the possible neighbors this 
+
+                    // node could have. (We will ignore diagonals for now.)
+
+                    Point[] neighbors = new Point[]
+
+    {
+
+        new Point (x, y - 1), // The node above the current node
+
+        new Point (x, y + 1), // The node below the current node.
+
+        new Point (x - 1, y), // The node left of the current node.
+
+        new Point (x + 1, y), // The node right of the current node
+
+    };
+
+
+
+                    // We loop through each of the possible neighbors
 
                     for (int i = 0; i < neighbors.Length; i++)
                     {
+
                         Point position = neighbors[i];
+
+
+
+                        // We need to make sure this neighbour is part of the level.
+
                         if (position.X < 0 || position.X > levelWidth - 1 ||
+
                             position.Y < 0 || position.Y > levelHeight - 1)
+                        {
+
+                            continue;
+
+                        }
+
+
+
+                        SearchNode neighbor = searchNodes[position.Y, position.X];
+
+
+                        // We will only bother keeping a reference 
+
+                        // to the nodes that can be walked on.
+
+                        if (neighbor == null || neighbor.Walkable == false)
                         {
                             continue;
                         }
 
-                        SearchNode neighbor = searchNodes[position.X, position.Y];
-
-                        if (neighbor == null || !neighbor.Walkable)
-                            continue;
-
+                        // Store a reference to the neighbor.
                         node.Neighbors[i] = neighbor;
                     }
                 }
             }
-        }
-
-        private static float Heuristic(Point point1, Point point2)
-        {
-            return Math.Abs(point1.X - point2.X) +
-                   Math.Abs(point1.Y - point2.Y);
         }
 
         private static void ResetSearchNodes()
@@ -116,9 +150,10 @@ namespace Origins_Remake.Util
             closedList.Clear();
 
             for (int x = 0; x < levelWidth; x++)
+            {
                 for (int y = 0; y < levelHeight; y++)
                 {
-                    SearchNode node = searchNodes[x, y];
+                    SearchNode node = searchNodes[y, x];
 
                     if (node == null)
                     {
@@ -131,6 +166,7 @@ namespace Origins_Remake.Util
                     node.DistanceTraveled = float.MaxValue;
                     node.DistanceToGoal = float.MaxValue;
                 }
+            }
         }
 
         private static SearchNode FindBestNode()
@@ -139,6 +175,7 @@ namespace Origins_Remake.Util
 
             float smallestDistanceToGoal = float.MaxValue;
 
+            // Find the closest node to the goal.
             for (int i = 0; i < openList.Count; i++)
             {
                 if (openList[i].DistanceToGoal < smallestDistanceToGoal)
@@ -147,24 +184,26 @@ namespace Origins_Remake.Util
                     smallestDistanceToGoal = currentTile.DistanceToGoal;
                 }
             }
-
             return currentTile;
         }
 
-        private static List<Vector2> FindFinalPath(SearchNode start, SearchNode end)
+        private static List<Vector2> FindFinalPath(SearchNode startNode, SearchNode endNode)
         {
-            closedList.Add(end);
+            closedList.Add(endNode);
 
-            SearchNode parent = end.Parent;
+            SearchNode parentTile = endNode.Parent;
 
-            while (parent != start)
+            // Trace back through the nodes using the parent fields
+            // to find the best path.
+            while (parentTile != startNode)
             {
-                closedList.Add(parent);
-                parent = parent.Parent;
+                closedList.Add(parentTile);
+                parentTile = parentTile.Parent;
             }
 
             List<Vector2> finalPath = new List<Vector2>();
 
+            // Reverse the path and transform into world space.
             for (int i = closedList.Count - 1; i >= 0; i--)
             {
                 finalPath.Add(new Vector2(closedList[i].Position.X * 32,
@@ -182,118 +221,59 @@ namespace Origins_Remake.Util
                 return new List<Vector2>();
             }
 
-            /////////////////////////////////////////////////////////////////////
-            // Step 1 : Clear the Open and Closed Lists and reset each node’s F 
-            //          and G values in case they are still set from the last 
-            //          time we tried to find a path. 
-            /////////////////////////////////////////////////////////////////////
+            if (startPoint == null)
+            {
+                return new List<Vector2>();
+            }
+
             ResetSearchNodes();
 
-            // Store references to the start and end nodes for convenience.
-            SearchNode startNode = searchNodes[startPoint.X, startPoint.Y];
-            SearchNode endNode = searchNodes[endPoint.X, endPoint.Y];
+            SearchNode startNode = searchNodes[startPoint.Y, startPoint.X];
+            SearchNode endNode = searchNodes[endPoint.Y, endPoint.X];
 
-            if (startNode == null || endNode == null)
-                return new List<Vector2>();
-
-            /////////////////////////////////////////////////////////////////////
-            // Step 2 : Set the start node’s G value to 0 and its F value to the 
-            //          estimated distance between the start node and goal node 
-            //          (this is where our H function comes in) and add it to the 
-            //          Open List. 
-            /////////////////////////////////////////////////////////////////////
             startNode.InOpenList = true;
-
             startNode.DistanceToGoal = Heuristic(startPoint, endPoint);
             startNode.DistanceTraveled = 0;
 
             openList.Add(startNode);
 
-            /////////////////////////////////////////////////////////////////////
-            // Setp 3 : While there are still nodes to look at in the Open list : 
-            /////////////////////////////////////////////////////////////////////
             while (openList.Count > 0)
             {
-                /////////////////////////////////////////////////////////////////
-                // a) : Loop through the Open List and find the node that 
-                //      has the smallest F value.
-                /////////////////////////////////////////////////////////////////
                 SearchNode currentNode = FindBestNode();
 
-                /////////////////////////////////////////////////////////////////
-                // b) : If the Open List empty or no node can be found, 
-                //      no path can be found so the algorithm terminates.
-                /////////////////////////////////////////////////////////////////
                 if (currentNode == null)
                 {
                     break;
                 }
 
-                /////////////////////////////////////////////////////////////////
-                // c) : If the Active Node is the goal node, we will 
-                //      find and return the final path.
-                /////////////////////////////////////////////////////////////////
                 if (currentNode == endNode)
                 {
-                    // Trace our path back to the start.
                     return FindFinalPath(startNode, endNode);
                 }
 
-                /////////////////////////////////////////////////////////////////
-                // d) : Else, for each of the Active Node’s neighbours :
-                /////////////////////////////////////////////////////////////////
                 for (int i = 0; i < currentNode.Neighbors.Length; i++)
                 {
                     SearchNode neighbor = currentNode.Neighbors[i];
 
-                    //////////////////////////////////////////////////
-                    // i) : Make sure that the neighbouring node can 
-                    //      be walked across. 
-                    //////////////////////////////////////////////////
                     if (neighbor == null || neighbor.Walkable == false)
                     {
                         continue;
                     }
 
-                    //////////////////////////////////////////////////
-                    // ii) Calculate a new G value for the neighbouring node.
-                    //////////////////////////////////////////////////
                     float distanceTraveled = currentNode.DistanceTraveled + 1;
 
-                    // An estimate of the distance from this node to the end node.
                     float heuristic = Heuristic(neighbor.Position, endPoint);
 
-                    //////////////////////////////////////////////////
-                    // iii) If the neighbouring node is not in either the Open 
-                    //      List or the Closed List : 
-                    //////////////////////////////////////////////////
                     if (neighbor.InOpenList == false && neighbor.InClosedList == false)
                     {
-                        // (1) Set the neighbouring node’s G value to the G value 
-                        //     we just calculated.
                         neighbor.DistanceTraveled = distanceTraveled;
-                        // (2) Set the neighbouring node’s F value to the new G value + 
-                        //     the estimated distance between the neighbouring node and
-                        //     goal node.
                         neighbor.DistanceToGoal = distanceTraveled + heuristic;
-                        // (3) Set the neighbouring node’s Parent property to point at the Active 
-                        //     Node.
                         neighbor.Parent = currentNode;
-                        // (4) Add the neighbouring node to the Open List.
                         neighbor.InOpenList = true;
                         openList.Add(neighbor);
                     }
-                    //////////////////////////////////////////////////
-                    // iv) Else if the neighbouring node is in either the Open 
-                    //     List or the Closed List :
-                    //////////////////////////////////////////////////
                     else if (neighbor.InOpenList || neighbor.InClosedList)
                     {
-                        // (1) If our new G value is less than the neighbouring 
-                        //     node’s G value, we basically do exactly the same 
-                        //     steps as if the nodes are not in the Open and 
-                        //     Closed Lists except we do not need to add this node 
-                        //     the Open List again.
                         if (neighbor.DistanceTraveled > distanceTraveled)
                         {
                             neighbor.DistanceTraveled = distanceTraveled;
@@ -304,16 +284,17 @@ namespace Origins_Remake.Util
                     }
                 }
 
-                /////////////////////////////////////////////////////////////////
-                // e) Remove the Active Node from the Open List and add it to the 
-                //    Closed List
-                /////////////////////////////////////////////////////////////////
                 openList.Remove(currentNode);
                 currentNode.InClosedList = true;
             }
 
-            // No path could be found.
             return new List<Vector2>();
+        }
+
+        private static float Heuristic(Point point1, Point point2)
+        {
+            return Math.Abs(point1.X - point2.X) +
+                   Math.Abs(point1.Y - point2.Y);
         }
     }
 }

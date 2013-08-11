@@ -40,7 +40,6 @@ namespace Origins_Remake.Entities.Mobs
         public Enemy(Vector2 pos)
             : base(pos)
         {
-            
         }
 
         public abstract override void SetAnimation();

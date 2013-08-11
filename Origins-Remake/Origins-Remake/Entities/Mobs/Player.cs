@@ -9,6 +9,14 @@ namespace Origins_Remake.Entities.Mobs
 {
     public class Player : AnimatedEntity
     {
+        private bool isTalking = false;
+
+        public bool IsTalking
+        {
+            get { return isTalking; }
+            set { isTalking = value; }
+        }
+
         public Player()
             : base(Vector2.Zero)
         {
@@ -71,7 +79,31 @@ namespace Origins_Remake.Entities.Mobs
                     isMoving = false;
                 else 
                     isMoving = true;
+
+                var npc = GetNearbyNpc();
+
+                if (npc != null)
+                {
+                    if (InputHandler.KeyPressed(Keys.Z))
+                    {
+                        if (!npc.IsBusy && !isTalking)
+                        {
+                            isTalking = true;
+                            npc.Speak();
+                        }
+                    }
+                }
             }
+        }
+
+        private Npc GetNearbyNpc()
+        {
+            foreach (Npc npc in EntityManager.Npcs)
+            {
+                if (Vector2.Distance(this.pos, npc.Position) < 15)
+                    return npc;
+            }
+            return null;
         }
     }
 }

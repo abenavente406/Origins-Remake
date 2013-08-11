@@ -1,45 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
 using GameHelperLibrary;
-using Origins_Remake.Levels;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
-using Origins_Remake.Util;
-using Origins_Remake.Entities;
 using GameHelperLibrary.Controls;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Origins_Remake.Entities;
+using Origins_Remake.Levels;
 using OriginsLib.Util;
+using Origins_Remake.GUI;
+using Origins_Remake.Util;
 
 namespace Origins_Remake.States
 {
+
+    #region State
     public class GameplayState : BaseGameState
     {
-        enum State
+        public enum State
         {
             Playing,
+            Frozen,
             Paused
         }
 
-        State currentState = State.Playing;
+        public State currentState = State.Playing;
 
-        LevelManager levelManager;
-        EntityManager entityManager;
-        GaussianBlur blurOverlay;
+        private LevelManager levelManager;
+        private EntityManager entityManager;
+        private GaussianBlur blurOverlay;
 
-        ControlManager pauseControls;
+        private ControlManager pauseControls;
 
-        RenderTarget2D mainTarget;
-        RenderTarget2D target1;
-        RenderTarget2D target2;
-        int renderTargetWidth;
-        int renderTargetHeight;
+        private RenderTarget2D mainTarget;
+        private RenderTarget2D target1;
+        private RenderTarget2D target2;
+        private int renderTargetWidth;
+        private int renderTargetHeight;
+
+        public static HUD hud;
 
         public GameplayState(Game game, GameStateManager manager)
             : base(game, manager) 
         {
-        
+            hud = new HUD(this);
         }
 
         protected override void LoadContent()
@@ -55,6 +58,7 @@ namespace Origins_Remake.States
             Camera.MaxClamp -= new Vector2(Camera.View.Width / 2, Camera.View.Height / 2);
 
             entityManager = new EntityManager(gameRef);
+            new Pathfinder(LevelManager.CurrentLevel);
 
             pauseControls = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
             {
@@ -147,36 +151,43 @@ namespace Origins_Remake.States
         {
             base.Update(gameTime);
 
-            if (currentState == State.Playing)
+            if (currentState != State.Frozen)
             {
+                if (currentState == State.Playing)
+                {
 #if DEBUG
-                if (InputHandler.KeyDown(Keys.OemPlus)) Camera.Zoom -= .01f;
-                if (InputHandler.KeyDown(Keys.OemMinus)) Camera.Zoom += .01f;
+                    if (InputHandler.KeyDown(Keys.OemPlus)) Camera.Zoom -= .01f;
+                    if (InputHandler.KeyDown(Keys.OemMinus)) Camera.Zoom += .01f;
 #endif
-                LevelManager.Update(gameTime);
-                EntityManager.UpdateAll(gameTime);
+                    LevelManager.Update(gameTime);
+                    EntityManager.UpdateAll(gameTime);
 
-                if (InputHandler.KeyPressed(Keys.Escape))
+                    if (InputHandler.KeyPressed(Keys.Escape))
+                    {
+                        currentState = State.Paused;
+                    }
+                }
+                else
                 {
-                    currentState = State.Paused;
+                    pauseControls.Update(gameTime, playerIndexInControl);
+
+                    if (InputHandler.KeyPressed(Keys.Escape))
+                    {
+                        currentState = State.Playing;
+                    }
                 }
             }
-            else
-            {
-                pauseControls.Update(gameTime, playerIndexInControl);
 
-                if (InputHandler.KeyPressed(Keys.Escape))
-                {
-                    currentState = State.Playing;
-                }
-            }
+
+            hud.Update(gameTime);
+
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            if (currentState == State.Playing)
+            if (currentState == State.Playing || currentState == State.Frozen)
             {
                 gameRef.GraphicsDevice.SetRenderTarget(mainTarget);
                 gameRef.GraphicsDevice.Clear(Color.Transparent);
@@ -193,6 +204,8 @@ namespace Origins_Remake.States
 
                 spriteBatch.Begin();
                 spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+                hud.Draw(gameTime, spriteBatch);
+
                 spriteBatch.End();
             }
             else
@@ -212,4 +225,5 @@ namespace Origins_Remake.States
             gameRef.spriteBatch.End();
         }
     }
+    #endregion
 }
