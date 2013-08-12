@@ -138,7 +138,7 @@ namespace Origins_Remake.GUI
                 if (InputHandler.KeyPressed(Keys.X))
                     currentLine += 1;
 
-                if (currentLine > numLines - maxLinesInBox)
+                if (currentLine - 1 > numLines - maxLinesInBox)
                     this.parent.ExitDialogue();
             }
             else
@@ -170,7 +170,7 @@ namespace Origins_Remake.GUI
                     if (counter < 0 || counter >= numLines)
                         continue;
 
-                    batch.DrawString(dialogueFont, linesOfText[counter] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);
+                    batch.DrawString(dialogueFont, linesOfText[counter - 1] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);
                     counter++;
                 }
             }

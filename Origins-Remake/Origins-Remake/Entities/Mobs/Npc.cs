@@ -34,15 +34,19 @@ namespace Origins_Remake.Entities.Mobs
         /// <summary>
         /// A small list of possible random npc names
         /// </summary>
-        private string[] randNames = new string[]
+        private string[] randNamesMale = new string[]
         {
             "Marty",
             "Fred",
             "Edward",
             "Jordan",
-            "Alyssa",
-            "Zade",
-            "Jade"
+            "Zaid",
+            "Zachary",
+            "Jacob",
+            "Devin",
+            "Daniel",
+            "Geofferey",
+            "Mohammed"
         };
 
         private Random rand = new Random();
@@ -74,7 +78,7 @@ namespace Origins_Remake.Entities.Mobs
         public Npc(Vector2 pos, Random rand)
             : base(pos)
         {
-            name = randNames[rand.Next(randNames.Length)];
+            name = randNamesMale[rand.Next(randNamesMale.Length)];
         }
 
         public override void SetTexture()

@@ -47,32 +47,51 @@ namespace Origins_Remake.Entities
             pathfinder = new Pathfinder(LevelManager.CurrentLevel);
 
             enemies = new List<Enemy>();
+
+#if DEBUG
             enemies.Add(new Skeleton(new Vector2(3) * 32));
+#endif
 
             Random rand = new Random();
 
             npcs = new List<Npc>();
-            for (int i = 0; i < 10; i++)
+
+            var sheet = SheetManager.SpriteSheets["allEntities"];
+
+            var questGiver1 = new Npc(Vector2.Zero, rand);
+
+            string d = "Hi there, " + Config.currentlyPlaying + "!" +
+                " I see you've discovered the first tutorial npc in the game.  Well, I'm here to teach you how to play." + 
+                " To interact with the world, press 'Z'.  To exit our dialogue boxes, press 'X'.  To pause, press 'Esc'." + 
+                " To fight?  Just click away!  See you around!";
+
+#if DEBUG
+            d += " And oh yeah, don't mind that guy following you.  That must means we are being run in 'DEBUG' mode.";
+#endif
+
+            questGiver1.AddDialogue(d);
+            questGiver1.SetTextures(
+                down: sheet.GetSubImage(0, 28),
+                    left: sheet.GetSubImage(0, 28),
+                    right: sheet.GetSubImage(0, 28),
+                    up: sheet.GetSubImage(0, 28)
+            );
+            npcs.Add(questGiver1);
+
+            for (int i = 0; i < 5; i++)
             {
-                var n = new Npc(new Vector2(6) * 32 * i, rand);
-                //n.AddDialogue("Howdy partner!");
-                //n.AddDialogue("What brings you to this part of town son?");
-                //n.AddDialogue("How you doin' fella?");
-                //n.AddDialogue("Have I seen you around before?");
+                var n = new Npc(new Vector2(6) * 32 * (i + 1), rand);
+                n.AddDialogue("Howdy partner!");
+                n.AddDialogue("What brings you to this part of town son?");
+                n.AddDialogue("How you doin' fella?");
+                n.AddDialogue("Have I seen you around before?");
 
-                var s = "";
-                for (int j = 0; j < 720; j++)
-                {
-                    s += alphabet[rand.Next(alphabet.Length)];
-                }
-                n.AddDialogue(s);
-
-                var sheet = SheetManager.SpriteSheets["allEntities"];
+                var spriteIndex = rand.Next(4);
                 n.SetTextures(
-                    down:sheet.GetSubImage(7, 0),
-                    left:sheet.GetSubImage(7, 1),
-                    right:sheet.GetSubImage(7, 2),
-                    up:sheet.GetSubImage(7, 3)
+                    down:sheet.GetSubImage(spriteIndex, 28),
+                    left: sheet.GetSubImage(spriteIndex, 28),
+                    right: sheet.GetSubImage(spriteIndex, 28),
+                    up: sheet.GetSubImage(spriteIndex, 28)
                 );
                 npcs.Add(n);
             }
@@ -102,22 +121,23 @@ namespace Origins_Remake.Entities
 
         public static void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            player.Draw(batch, gameTime);
-
-            enemies.ForEach(e =>
-                {
-                    e.Draw(batch, gameTime);
-
-#if DEBUG
-                    if (e.aiState == AiState.TARGETTING)
-                        e.DrawPathToPlayer(batch, Player);
-#endif
-                });
-
             npcs.ForEach(n =>
                 {
                     n.Draw(batch, gameTime);
                 });
+
+            player.Draw(batch, gameTime);
+
+            enemies.ForEach(e =>
+            {
+                e.Draw(batch, gameTime);
+
+#if DEBUG
+                if (e.aiState == AiState.TARGETTING)
+                    e.DrawPathToPlayer(batch, Player);
+#endif
+            });
+
         }
 
         public static double GetAngleToPlayer(Entity from)
