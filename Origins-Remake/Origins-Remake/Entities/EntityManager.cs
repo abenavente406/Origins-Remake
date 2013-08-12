@@ -17,10 +17,11 @@ namespace Origins_Remake.Entities
         static List<Enemy> enemies = new List<Enemy>();
         static List<Npc> npcs = new List<Npc>();
 
-        static string[] alphabet = new string[26] 
+        static string[] alphabet = new string[] 
         {
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-            "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+            "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", " ", 
+            " "
         };
 
         public static Player Player
@@ -54,10 +55,17 @@ namespace Origins_Remake.Entities
             for (int i = 0; i < 10; i++)
             {
                 var n = new Npc(new Vector2(6) * 32 * i, rand);
-                n.AddDialogue("Howdy partner!");
-                n.AddDialogue("What brings you to this part of town son?");
-                n.AddDialogue("How you doin' fella?");
-                n.AddDialogue("Have I seen you around before?");
+                //n.AddDialogue("Howdy partner!");
+                //n.AddDialogue("What brings you to this part of town son?");
+                //n.AddDialogue("How you doin' fella?");
+                //n.AddDialogue("Have I seen you around before?");
+
+                var s = "";
+                for (int j = 0; j < 720; j++)
+                {
+                    s += alphabet[rand.Next(alphabet.Length)];
+                }
+                n.AddDialogue(s);
 
                 var sheet = SheetManager.SpriteSheets["allEntities"];
                 n.SetTextures(

@@ -15,49 +15,41 @@ namespace Origins_Remake.GUI
     public class DialogueBox
     {
         private HUD parent;
-        private string owner = "";
+
+        private string textOwner = "";
         private string text = "";
-        private readonly int maxLines = 4;
+        private readonly int maxLinesInBox = 4;
 
         private Texture2D dialogueBoxTex;
+
         private SpriteFont dialogueFont;
         private SpriteFont dialogueBoldFont;
 
         private Rectangle dialogueBounds = new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT / 4);
         private Color semiTransparentGray;
+
         private float[] padding = new float[4] { 0, 0, 0, 0 };
-        private bool multiPage = false;
-
-        private string[] linesOfText;
-
-        private int maxLettersPerLine;
-        private int pages;
-        private int currentPage = 1;
-        private int charsPerPage;
 
         /// <summary>
-        /// Gets the max letters per line
+        /// If the dialogue box has multiple pages
         /// </summary>
-        public int MaxLettersPerLine
-        {
-            get { return maxLettersPerLine; }
-            set
-            {
-                maxLettersPerLine = value;
-                charsPerPage = maxLettersPerLine * maxLines;
-            }
-        }
+        private bool multiPage = false;
+
+        /// <summary>
+        /// The dialogue text split into lines
+        /// </summary>
+        private string[] linesOfText;
+
+        private int currentLine = 1;
+        private int numLines = 1;
 
         /// <summary>
         /// Gets the name of the owner of the dialogue
         /// </summary>
-        public string Owner
+        public string TextOwner
         {
-            get { return owner; }
-            set
-            {
-                owner = value;
-            }
+            get { return textOwner; }
+            set { textOwner = value; }
         }
 
         /// <summary>
@@ -66,32 +58,7 @@ namespace Origins_Remake.GUI
         public string Text
         {
             get { return text; }
-            set
-            {
-                linesOfText = new string[1024];
-                int charLength = value.Length;
-                int lines = (int)Math.Round(((float)charLength / (float)maxLettersPerLine) + 0.5, 0);
-                int leftOverChars = charLength % maxLettersPerLine;
-                pages = lines;
-                if (pages > 1)
-                    multiPage = true;
-                string tempValue = "";
-                for (int i = 0; i < lines; i++)
-                {
-                    if (i == lines - 1)
-                    {
-                        tempValue += value.Substring(maxLettersPerLine * (lines - 1), leftOverChars);
-                        linesOfText[i] = value.Substring(maxLettersPerLine * i, leftOverChars);
-                    }
-                    else
-                    {
-                        tempValue += value.Substring(maxLettersPerLine * i, maxLettersPerLine) + "\n";
-                        linesOfText[i] = value.Substring(maxLettersPerLine * i, maxLettersPerLine);
-                    }
-
-                }
-                text = tempValue;
-            }
+            set { text = WrapText(value); }
         }
 
         /// <summary>
@@ -103,7 +70,6 @@ namespace Origins_Remake.GUI
             set
             {
                 padding = value;
-                MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString(" ").X);
             }
         }
 
@@ -113,7 +79,6 @@ namespace Origins_Remake.GUI
             set
             {
                 padding[0] = value;
-                MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString(" ").X);
             }
         }
 
@@ -123,7 +88,6 @@ namespace Origins_Remake.GUI
             set
             {
                 padding[1] = value;
-                MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString("O").X);
             }
         }
 
@@ -133,7 +97,6 @@ namespace Origins_Remake.GUI
             set
             {
                 padding[2] = value;
-                MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString("O").X);
             }
         }
 
@@ -143,23 +106,22 @@ namespace Origins_Remake.GUI
             set
             {
                 padding[3] = value;
-                MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString("O").X);
             }
         }
 
         /// <summary>
         /// Gets or sets the current page
         /// </summary>
-        public int CurrentPage
+        public int CurrentLine
         {
-            get { return currentPage; }
-            set { currentPage = value; }
+            get { return currentLine; }
+            set { currentLine = value; }
         }
 
         public DialogueBox(HUD parent, string owner, string text)
         {
             this.parent = parent;
-            this.owner = owner;
+            this.textOwner = owner;
             this.text = text;
 
             dialogueBoxTex = new DrawableRectangle(parent.parentState.Game.GraphicsDevice, new Vector2(10, 10), Color.Black, true).Texture;
@@ -167,8 +129,6 @@ namespace Origins_Remake.GUI
             dialogueBoldFont = parent.parentState.Game.Content.Load<SpriteFont>("Fonts\\dialogueBold");
 
             semiTransparentGray = new Color(.18f, .18f, .18f, .8f);
-
-            MaxLettersPerLine = (int)((800 - PaddingLeft) / dialogueFont.MeasureString("O").X);
         }
 
         public void Update(GameTime gameTime)
@@ -176,9 +136,9 @@ namespace Origins_Remake.GUI
             if (multiPage)
             {
                 if (InputHandler.KeyPressed(Keys.X))
-                    currentPage += 1;
+                    currentLine += 1;
 
-                if (currentPage > pages - maxLines)
+                if (currentLine > numLines - maxLinesInBox)
                     this.parent.ExitDialogue();
             }
             else
@@ -193,20 +153,25 @@ namespace Origins_Remake.GUI
             batch.Draw(dialogueBoxTex,
                         new Rectangle(0, MainGame.GAME_HEIGHT - dialogueBounds.Height, MainGame.GAME_WIDTH, dialogueBounds.Width),
                         semiTransparentGray);
-            batch.DrawString(dialogueBoldFont, owner, new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop), Color.White);
+            batch.DrawString(dialogueBoldFont, textOwner, new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop), Color.White);
 
             if (!multiPage)
             {
-                for (int i = 0; i < maxLines; i++)
+                for (int i = 0; i < numLines; i++)
                 {
                     batch.DrawString(dialogueFont, linesOfText[i] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);
                 }
             }
             else
             {
-                for (int i = 0; i < maxLines; i++)
+                var counter = currentLine;
+                for (int i = 0; i < maxLinesInBox; i++)
                 {
-                    batch.DrawString(dialogueFont, linesOfText[i + (currentPage)] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);
+                    if (counter < 0 || counter >= numLines)
+                        continue;
+
+                    batch.DrawString(dialogueFont, linesOfText[counter] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);
+                    counter++;
                 }
             }
 
@@ -220,20 +185,32 @@ namespace Origins_Remake.GUI
             float maxLine = MainGame.GAME_WIDTH - (PaddingLeft + PaddingRight); //a bit smaller than the box so you can have some padding...etc
             float spaceWidth = dialogueFont.MeasureString(" ").X;
 
+            numLines = 1;
+
             foreach (string word in words)
             {
                 Vector2 size = dialogueFont.MeasureString(word);
-                if (linewidth + size.X < 250)
+                if (linewidth + size.X < maxLine)
                 {
                     sb.Append(word + " ");
                     linewidth += size.X + spaceWidth;
                 }
                 else
                 {
+                    numLines++;
                     sb.Append("\n" + word + " ");
                     linewidth = size.X + spaceWidth;
                 }
             }
+
+            linesOfText = new string[numLines];
+
+            var split = sb.ToString().Split('\n');
+            for (int i = 0; i < split.Length; i++)
+                linesOfText[i] = split[i];
+
+            multiPage = linesOfText.Length > maxLinesInBox;
+
             return sb.ToString();
         }
     }

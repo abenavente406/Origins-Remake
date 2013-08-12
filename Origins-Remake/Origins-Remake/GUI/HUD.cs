@@ -33,11 +33,11 @@ namespace Origins_Remake.GUI
         public void ShowDialogue(Npc npc, string dialogue = "")
         {
             this.textOwner = npc;
-            dialogueBox.CurrentPage = 1;
+            dialogueBox.CurrentLine = 1;
 
             parentState.currentState = GameplayState.State.Frozen;
             drawingType = DrawingType.Dialogue;
-            dialogueBox.Owner = npc.Name;
+            dialogueBox.TextOwner = npc.Name;
 
             dialogueBox.Text = dialogue == "" ? npc.GetRandomDialogue() : dialogue;
         }
@@ -54,7 +54,7 @@ namespace Origins_Remake.GUI
 
             parentState.currentState = GameplayState.State.Playing;
             drawingType = DrawingType.HUD;
-            dialogueBox.Owner = "";
+            dialogueBox.TextOwner = "";
             dialogueBox.Text = "";
         }
 
