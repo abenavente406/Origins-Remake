@@ -9,11 +9,11 @@ using Origins_Remake.Levels;
 using OriginsLib.Util;
 using Origins_Remake.GUI;
 using Origins_Remake.Util;
+using GameHelperLibrary.Shapes;
+using OriginsLib.IO;
 
 namespace Origins_Remake.States
 {
-
-    #region State
     public class GameplayState : BaseGameState
     {
         public enum State
@@ -23,13 +23,23 @@ namespace Origins_Remake.States
             Paused
         }
 
+        public enum State_Paused
+        {
+            Normal,
+            Save,
+            Quit
+        }
+
         public State currentState = State.Playing;
 
         private LevelManager levelManager;
         private EntityManager entityManager;
         private GaussianBlur blurOverlay;
 
-        private ControlManager pauseControls;
+        private ControlManager pauseControls_Normal;
+        private ControlManager pauseControls_Save;
+        private ControlManager pauseControls_Quit;
+        private State_Paused pauseState = State_Paused.Normal;
 
         private RenderTarget2D mainTarget;
         private RenderTarget2D target1;
@@ -37,11 +47,23 @@ namespace Origins_Remake.States
         private int renderTargetWidth;
         private int renderTargetHeight;
 
+        private Texture2D background;
+
         public static HUD hud;
 
+        private bool loadedGame = false;
+        private EntityProperties loadedProps;
         public GameplayState(Game game, GameStateManager manager)
             : base(game, manager) 
         {
+            hud = new HUD(this);
+        }
+
+        public GameplayState(Game game, GameStateManager manager, EntityProperties properties)
+            : base(game, manager)
+        {
+            loadedGame = true;
+            loadedProps = properties == null ? new EntityProperties() : properties;
             hud = new HUD(this);
         }
 
@@ -52,15 +74,32 @@ namespace Origins_Remake.States
 
         public override void LargeLoadContent(object sender)
         {
+            var Content = gameRef.Content;
+
+            background = new DrawableRectangle(gameRef.GraphicsDevice, new Vector2(10, 10), Color.Black, true).Texture;
+
             levelManager = new LevelManager(gameRef);
             Camera.Initialize(Vector2.Zero, new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT),
                 new Vector2(LevelManager.CurrentLevel.WidthInPixels, LevelManager.CurrentLevel.HeightInPixels));
             Camera.MaxClamp -= new Vector2(Camera.View.Width / 2, Camera.View.Height / 2);
 
             entityManager = new EntityManager(gameRef);
+
+            if (!loadedGame)
+            {
+                EntityManager.Player.Name = Config.currentlyPlaying;
+            }
+            else
+            {
+                Config.SetLastLogin(loadedProps.Name);
+                Config.currentlyPlaying = loadedProps.Name;
+                EntityManager.Player.LoadFromData(loadedProps);
+            }
+
             new Pathfinder(LevelManager.CurrentLevel);
 
-            pauseControls = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
+            #region Pause_Normal
+            pauseControls_Normal = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
             {
                 Label lblPauseDisplay = new Label()
                 {
@@ -72,14 +111,16 @@ namespace Origins_Remake.States
                     MainGame.GAME_HEIGHT / 1.8f - lblPauseDisplay.Height - 10);
 
                 var back = new LinkLabel(1) { Name = "lnklblBack", Text = "Resume" };
-                var quit = new LinkLabel(2) { Name = "lnklblQuit", Text = "Quit to Menu" };
+                var quit = new LinkLabel(3) { Name = "lnklblQuit", Text = "Quit to Menu" };
+                var save = new LinkLabel(2) { Name = "lnklblSave", Text = "Save Game" };
 
-                pauseControls.Add(lblPauseDisplay);
-                pauseControls.Add(back);
-                pauseControls.Add(quit);
+                pauseControls_Normal.Add(lblPauseDisplay);
+                pauseControls_Normal.Add(back);
+                pauseControls_Normal.Add(save);
+                pauseControls_Normal.Add(quit);
 
                 Vector2 startPos = new Vector2(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 1.8f);
-                foreach (Control c in pauseControls)
+                foreach (Control c in pauseControls_Normal)
                 {
                     if (c is LinkLabel)
                     {
@@ -95,6 +136,51 @@ namespace Origins_Remake.States
                     }
                 }
             }
+            #endregion
+
+            #region Pause_Save
+            pauseControls_Save = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
+
+            Label status = new Label();
+            status.AutoSize = true;
+            status.Text = "Save game success!";
+            status.Position = new Vector2(MainGame.GAME_WIDTH / 2 - status.Width / 2, MainGame.GAME_HEIGHT / 2 - status.Height);
+            pauseControls_Save.Add(status);
+
+            LinkLabel goBack_Save = new LinkLabel(0);
+            goBack_Save.AutoSize = true;
+            goBack_Save.Text = "Go Back";
+            goBack_Save.Position = new Vector2(MainGame.GAME_WIDTH / 2 - goBack_Save.Width / 2, status.Position.Y + status.Height + 10);
+            goBack_Save.Selected += (o, e) => { pauseState = State_Paused.Normal; };
+            goBack_Save.OnMouseIn += LinkLabel_OnMouseIn;
+            pauseControls_Save.Add(goBack_Save);
+            #endregion
+
+            #region Pause_Quit
+            pauseControls_Quit = new ControlManager(gameRef, gameRef.Content.Load<SpriteFont>("Fonts\\default"));
+
+            Label areYouSure1 = new Label();
+            areYouSure1.Name = "lblAreYouSure?";
+            areYouSure1.Text = "Are you sure you want to quit?";
+            areYouSure1.Position = new Vector2(MainGame.GAME_WIDTH / 2 - areYouSure1.SpriteFont.MeasureString(
+                areYouSure1.Text).X / 2, 140);
+            pauseControls_Quit.Add(areYouSure1);
+
+            LinkLabel yes = new LinkLabel(1) { Name = "lnklblYes", Text = "Yes" };
+            yes.Position = new Vector2(areYouSure1.Position.X + 40, areYouSure1.Position.Y + areYouSure1.Height + 50);
+            yes.OnMouseIn += LinkLabel_OnMouseIn;
+            yes.Selected += (o, e) => { SwitchStateWithFade(new MainMenuState(gameRef, StateManager)); };
+            yes.Effect = ControlEffect.PULSE;
+
+            LinkLabel no = new LinkLabel(2) { Name = "lnklblNo", Text = "No" };
+            no.Position = new Vector2(areYouSure1.Position.X + areYouSure1.Width - no.Width - 40, yes.Position.Y);
+            no.OnMouseIn += LinkLabel_OnMouseIn;
+            no.Selected += (o, e) => { pauseState = State_Paused.Normal; };
+            no.Effect = ControlEffect.PULSE;
+
+            pauseControls_Quit.Add(yes);
+            pauseControls_Quit.Add(no);
+            #endregion
 
             blurOverlay = new GaussianBlur(gameRef);
             renderTargetWidth = MainGame.GAME_WIDTH;
@@ -128,9 +214,30 @@ namespace Origins_Remake.States
             LinkLabel lbl = (LinkLabel)sender;
 
             if (lbl.Name == "lnklblBack")
+            {
                 currentState = State.Playing;
+                pauseState = State_Paused.Normal;
+            }
+            else if (lbl.Name == "lnklblSave")
+            {
+                pauseState = State_Paused.Save;
+                pauseControls_Save[0].Text = IOManager.SavePlayerData(
+                    new EntityProperties()
+                    {
+                        Name = EntityManager.Player.Name,
+                        Direction = EntityManager.Player.Direction,
+                        Position = EntityManager.Player.Position,
+                        GodMode = EntityManager.Player.GodMode,
+                        NoClip = EntityManager.Player.NoClip,
+                        SuperSpeed = EntityManager.Player.SuperSpeed,
+                        TimeOfSave = DateTime.Now
+                    }
+                    ) ? "Save game success!" : "Save game failure!";
+            }
             else if (lbl.Name == "lnklblQuit")
-                SwitchStateWithFade(new MainMenuState(gameRef, StateManager));
+            {
+                pauseState = State_Paused.Quit;
+            }
         }
 
         private void LinkLabel_OnMouseIn(object sender, EventArgs e)
@@ -142,7 +249,18 @@ namespace Origins_Remake.States
                 case State.Playing:
                     break;
                 case State.Paused:
-                    pauseControls.SelectControl(lbl.Index);
+                    switch (pauseState)
+                    {
+                        case State_Paused.Normal:
+                            pauseControls_Normal.SelectControl(lbl.Index);
+                            break;
+                        case State_Paused.Save:
+                            pauseControls_Save.SelectControl(lbl.Index);
+                            break;
+                        case State_Paused.Quit:
+                            pauseControls_Quit.SelectControl(lbl.Index);
+                            break;
+                    }
                     break;
             }
         }
@@ -156,20 +274,34 @@ namespace Origins_Remake.States
                 if (currentState == State.Playing)
                 {
 #if DEBUG
-                    if (InputHandler.KeyDown(Keys.OemPlus)) Camera.Zoom -= .01f;
-                    if (InputHandler.KeyDown(Keys.OemMinus)) Camera.Zoom += .01f;
+                    if (InputHandler.KeyDown(Keys.OemPlus)) Camera.Zoom += .01f;
+                    if (InputHandler.KeyDown(Keys.OemMinus)) Camera.Zoom -= .01f;
 #endif
                     LevelManager.Update(gameTime);
                     EntityManager.UpdateAll(gameTime);
 
                     if (InputHandler.KeyPressed(Keys.Escape))
                     {
-                        currentState = State.Paused;
+                        if (pauseState == State_Paused.Normal)
+                            currentState = State.Paused;
+                        else
+                            pauseState = State_Paused.Normal;
                     }
                 }
                 else
                 {
-                    pauseControls.Update(gameTime, playerIndexInControl);
+                    switch (pauseState)
+                    {
+                        case State_Paused.Normal:
+                            pauseControls_Normal.Update(gameTime, playerIndexInControl);
+                            break;
+                        case State_Paused.Save:
+                            pauseControls_Save.Update(gameTime, playerIndexInControl);
+                            break;
+                        case State_Paused.Quit:
+                            pauseControls_Quit.Update(gameTime, playerIndexInControl);
+                            break;
+                    }
 
                     if (InputHandler.KeyPressed(Keys.Escape))
                     {
@@ -216,7 +348,22 @@ namespace Origins_Remake.States
 
                 spriteBatch.Begin();
                 spriteBatch.Draw(result, Vector2.Zero, Color.White);
-                pauseControls.Draw(spriteBatch, gameTime);
+                spriteBatch.Draw(background, new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT), Color.Black * .6f);
+                switch (pauseState)
+                {
+                    case State_Paused.Normal:
+                        pauseControls_Normal.Draw(spriteBatch, gameTime);
+                        break;
+                    case State_Paused.Save:
+                        pauseControls_Save.Draw(spriteBatch, gameTime);
+                        break;
+                    case State_Paused.Quit:
+                        pauseControls_Quit.Draw(spriteBatch, gameTime);
+                        break;
+                    default:
+                        break;
+                }
+                                
                 spriteBatch.End();
             }
 
@@ -225,5 +372,4 @@ namespace Origins_Remake.States
             gameRef.spriteBatch.End();
         }
     }
-    #endregion
 }

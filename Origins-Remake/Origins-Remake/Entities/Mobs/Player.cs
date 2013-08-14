@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Origins_Remake.Util;
 using OriginsLib.Util;
+using OriginsLib.IO;
 
 namespace Origins_Remake.Entities.Mobs
 {
@@ -104,6 +105,16 @@ namespace Origins_Remake.Entities.Mobs
                     return npc;
             }
             return null;
+        }
+
+        public void LoadFromData(EntityProperties props)
+        {
+            Name = props.Name;
+            Position = props.Position;
+            dir = props.Direction;
+            godMode = props.GodMode;
+            noClip = props.NoClip;
+            superSpeed = props.SuperSpeed;
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using GameHelperLibrary.Shapes;
 using Origins_Remake.Util;
 using OriginsLib.Util;
+using OriginsLib.IO;
 
 namespace Origins_Remake.States
 {
@@ -33,6 +34,7 @@ namespace Origins_Remake.States
         ControlManager optionsControls;
         ControlManager quitControls;
 
+        Texture2D titleImage;
         Texture2D blackOverlay;
         GaussianBlur blurOverlay;
 
@@ -53,6 +55,8 @@ namespace Origins_Remake.States
 
             var Content = gameRef.Content;
 
+            IOManager.Init();
+
             blackOverlay = new DrawableRectangle(GraphicsDevice,
                 new Vector2(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT), Color.White, true).Texture;
 
@@ -60,9 +64,11 @@ namespace Origins_Remake.States
             blurOverlay.ComputeKernel(7, 2.0f);
 
 
+            titleImage = Content.Load<Texture2D>("Images\\title");
+
             title = new Label();
             title.SpriteFont = Content.Load<SpriteFont>("Fonts\\title");
-            title.Text = "O R I G I N S";
+            title.Text = "";
             title.Color = Color.White;
             title.Position = new Vector2(MainGame.GAME_WIDTH / 2 - title.Width / 2, 90);
             controls.Add(title);
@@ -99,6 +105,8 @@ namespace Origins_Remake.States
                     c.Selected += new EventHandler(LinkLabel_Selected);
                     c.Effect = ControlEffect.PULSE;
                     c.Color = Color.Black;
+                    ((LinkLabel)c).SelectedColor = Color.DarkBlue;
+
                     l.OnMouseIn += LinkLabel_OnMouseIn;
 
                     startPos.Y += c.Height + 10f;
@@ -128,7 +136,11 @@ namespace Origins_Remake.States
             LinkLabel startGame = new LinkLabel(2) { Name = "lnklblNewGame", Text = "Start" };
             startGame.Position = new Vector2(prompt.Position.X, name.Position.Y + 44);
             startGame.OnMouseIn += LinkLabel_OnMouseIn;
-            startGame.Selected += (o, e) => { Config.currentlyPlaying = newGameControls[1].Text;  SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager))); };
+            startGame.Selected += (o, e) => 
+            { 
+                Config.currentlyPlaying = newGameControls[1].Text;  
+                SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager))); 
+            };
             startGame.Effect = ControlEffect.PULSE;
 
             LinkLabel cancel = new LinkLabel(3) { Name = "lnklblCancel", Text = "Cancel" };
@@ -142,6 +154,37 @@ namespace Origins_Remake.States
             #endregion
 
             #region Load Game State
+            loadGameControls = new ControlManager(gameRef, Content.Load<SpriteFont>("Fonts\\default"));
+
+            List<EntityProperties> saves = new List<EntityProperties>();
+            saves = IOManager.GetAllPlayerDatas();
+
+            startPos = new Vector2(MainGame.GAME_WIDTH / 2, 0);
+            int counter = 0;
+            foreach (EntityProperties ep in saves)
+            {
+                var lnklblLoadSave = new LinkLabel(counter++);
+                lnklblLoadSave.AutoSize = true;
+                lnklblLoadSave.Name = "lnklblLoadSave";
+                lnklblLoadSave.Text = ep.Name + " | " + ep.TimeOfSave;
+                lnklblLoadSave.OnMouseIn += LinkLabel_OnMouseIn;
+                lnklblLoadSave.Selected += (o, e) => { SwitchStateWithFade(new LoadingState(gameRef, StateManager, new GameplayState(gameRef, StateManager, ep))); };
+                lnklblLoadSave.Effect = ControlEffect.PULSE;
+
+                var offset = new Vector2(lnklblLoadSave.Width / 2, 0);
+                lnklblLoadSave.Position = startPos - offset;
+                startPos.Y += lnklblLoadSave.Height + 10;
+                loadGameControls.Add(lnklblLoadSave);
+            }
+
+            var goBack_Load = new LinkLabel(loadGameControls.Count);
+            goBack_Load.Name = "lnklblGoBackLoad";
+            goBack_Load.Text = "Go Back";
+            goBack_Load.Effect = ControlEffect.PULSE;
+            goBack_Load.Position = new Vector2(MainGame.GAME_WIDTH / 2 - goBack_Load.Width / 2, MainGame.GAME_HEIGHT - goBack_Load.Height - 100);
+            goBack_Load.OnMouseIn += LinkLabel_OnMouseIn;
+            goBack_Load.Selected += (o, e) => { currentState = State.Menu; };
+            loadGameControls.Add(goBack_Load);
 
             #endregion
 
@@ -186,6 +229,8 @@ namespace Origins_Remake.States
 
             if (lbl.Name == "lnklblStart")
                 currentState = State.NewGame;
+            else if (lbl.Name == "lnklblLoad")
+                currentState = State.LoadGame;
             else if (lbl.Name == "lnklblQuit")
                 currentState = State.Quit;
         }
@@ -227,6 +272,7 @@ namespace Origins_Remake.States
                     newGameControls.Update(gameTime, playerIndexInControl);
                     break;
                 case State.LoadGame:
+                    loadGameControls.Update(gameTime, playerIndexInControl);
                     break;
                 case State.Options:
                     optionsControls.Update(gameTime, playerIndexInControl);
@@ -246,7 +292,7 @@ namespace Origins_Remake.States
             anim.Draw(batch, gameTime, new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT));
 #if DEBUG
             batch.DrawString(debugFont, "DEBUGGING -- " + MainGame.VERSION, new Vector2(MainGame.GAME_WIDTH - debugFont.MeasureString(
-                "DEBUGGING -- " + MainGame.VERSION).X - 2, MainGame.GAME_HEIGHT - debugFont.LineSpacing - 2), Color.White);
+                "DEBUGGING -- " + MainGame.VERSION).X - 5, MainGame.GAME_HEIGHT - debugFont.LineSpacing - 2), Color.White);
 #else
             batch.DrawString(debugFont, MainGame.VERSION, new Vector2(MainGame.GAME_WIDTH - debugFont.MeasureString(
                 MainGame.VERSION).X - 2, MainGame.GAME_HEIGHT - debugFont.LineSpacing - 2), Color.White);
@@ -258,6 +304,9 @@ namespace Origins_Remake.States
             batch.Begin();
             {
                 menuControls.Draw(batch, gameTime);
+
+                batch.Draw(titleImage, new Vector2(MainGame.GAME_WIDTH / 2 - title.Width - 280, 70), Color.White);
+
                 if (currentState != State.Menu) batch.Draw(blackOverlay, Vector2.Zero, Color.Black * 0.8f);
                 switch (currentState)
                 {
@@ -265,6 +314,7 @@ namespace Origins_Remake.States
                         newGameControls.Draw(batch, gameTime);
                         break;
                     case State.LoadGame:
+                        loadGameControls.Draw(batch, gameTime);
                         break;
                     case State.Options:
                         optionsControls.Draw(batch, gameTime);

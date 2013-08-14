@@ -27,6 +27,7 @@ namespace Origins_Remake.GUI
 
         private Rectangle dialogueBounds = new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT / 4);
         private Color semiTransparentGray;
+        private Color darkGray;
 
         private float[] padding = new float[4] { 0, 0, 0, 0 };
 
@@ -128,7 +129,8 @@ namespace Origins_Remake.GUI
             dialogueFont = parent.parentState.Game.Content.Load<SpriteFont>("Fonts\\dialogue");
             dialogueBoldFont = parent.parentState.Game.Content.Load<SpriteFont>("Fonts\\dialogueBold");
 
-            semiTransparentGray = new Color(.18f, .18f, .18f, .8f);
+            semiTransparentGray = new Color(0, 0, 0, .6f);
+            darkGray = new Color(0f, 0f, 0f, .9f);
         }
 
         public void Update(GameTime gameTime)
@@ -151,6 +153,9 @@ namespace Origins_Remake.GUI
         public void Draw(GameTime gameTime, SpriteBatch batch)
         {
             batch.Draw(dialogueBoxTex,
+                new Rectangle(0, 0, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT),
+                semiTransparentGray);
+            batch.Draw(dialogueBoxTex,
                         new Rectangle(0, MainGame.GAME_HEIGHT - dialogueBounds.Height, MainGame.GAME_WIDTH, dialogueBounds.Width),
                         semiTransparentGray);
             batch.DrawString(dialogueBoldFont, textOwner, new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop), Color.White);
@@ -167,7 +172,7 @@ namespace Origins_Remake.GUI
                 var counter = currentLine;
                 for (int i = 0; i < maxLinesInBox; i++)
                 {
-                    if (counter < 0 || counter >= numLines)
+                    if (counter < 0 || counter > numLines)
                         continue;
 
                     batch.DrawString(dialogueFont, linesOfText[counter - 1] + "\n", new Vector2(PaddingLeft, MainGame.GAME_HEIGHT - dialogueBounds.Height + PaddingTop + dialogueFont.LineSpacing * i + dialogueBoldFont.LineSpacing), Color.White);

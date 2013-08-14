@@ -101,6 +101,31 @@ namespace Origins_Remake.Entities
         {
             get { return Position + new Vector2(width / 2, height / 2); }
         }
+
+        /// <summary>
+        /// Gets if the entity is invincible
+        /// </summary>
+        public bool GodMode
+        {
+            get { return godMode; }
+        }
+
+        /// <summary>
+        /// Gets if the entity can ignore collisions
+        /// </summary>
+        public bool NoClip
+        {
+            get { return noClip; }
+        }
+
+        /// <summary>
+        /// Gets if the entity can move extremely fasts
+        /// </summary>
+        public bool SuperSpeed
+        {
+            get { return superSpeed; }
+        }
+
         #endregion
 
         #region Initialization

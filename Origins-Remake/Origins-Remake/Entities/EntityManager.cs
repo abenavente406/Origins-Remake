@@ -59,23 +59,22 @@ namespace Origins_Remake.Entities
             var sheet = SheetManager.SpriteSheets["allEntities"];
 
             var questGiver1 = new Npc(Vector2.Zero, rand);
-
             string d = "Hi there, " + Config.currentlyPlaying + "!" +
                 " I see you've discovered the first tutorial npc in the game.  Well, I'm here to teach you how to play." + 
                 " To interact with the world, press 'Z'.  To exit our dialogue boxes, press 'X'.  To pause, press 'Esc'." + 
-                " To fight?  Just click away!  See you around!";
-
+                " To fight?  Just click away!  Good luck to you. And I hope to see you around!!  Goodbye!";
 #if DEBUG
-            d += " And oh yeah, don't mind that guy following you.  That must means we are being run in 'DEBUG' mode.";
-#endif
+            d += "  P.S. - Don't mind that guy following you.  That must means we are being run in DEBUG mode.";
+#endif 
 
             questGiver1.AddDialogue(d);
             questGiver1.SetTextures(
                 down: sheet.GetSubImage(0, 28),
-                    left: sheet.GetSubImage(0, 28),
-                    right: sheet.GetSubImage(0, 28),
-                    up: sheet.GetSubImage(0, 28)
+                left: sheet.GetSubImage(0, 28),
+                right: sheet.GetSubImage(0, 28),
+                up: sheet.GetSubImage(0, 28)
             );
+            questGiver1.Name = "Barney";
             npcs.Add(questGiver1);
 
             for (int i = 0; i < 5; i++)
