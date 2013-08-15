@@ -5,12 +5,19 @@ using Microsoft.Xna.Framework.Input;
 using Origins_Remake.Util;
 using OriginsLib.Util;
 using OriginsLib.IO;
+using OriginsLib.TileEngine;
+using Origins_Remake.Levels;
 
 namespace Origins_Remake.Entities.Mobs
 {
     public class Player : AnimatedEntity
     {
         private bool isTalking = false;
+        private int idOfExitZoneEntered = 0;
+        private bool justEntered = false;
+
+        private string previousLevel = "";
+        private string currentLevel = "";
 
         public bool IsTalking
         {
@@ -48,6 +55,29 @@ namespace Origins_Remake.Entities.Mobs
             HandleInput(InputHandler.GamePadConnected, ref newPos);
             Move(Position.X + newPos.X, Position.Y + newPos.Y);
             Camera.SetPosition(Position - new Vector2(Camera.View.Width / 2, Camera.View.Height / 2));
+
+            LevelManager.CurrentLevel.ExitZones.ForEach((zone) =>
+            {
+                if (!justEntered)
+                {
+                    if (new Rectangle((int)GridPosition.X, (int)GridPosition.Y, 1, 1).Intersects(zone.Bounds) && !zone.InUse)
+                    {
+                        LevelManager.ChangeLevel(zone.Target);
+                        LevelManager.CurrentLevel.exitZones[0] = new ExitZone(LevelManager.CurrentLevel.exitZones[0].Bounds, zone.Target, zone.Parent) { InUse = true };
+                        idOfExitZoneEntered = 0;
+                        justEntered = true;
+                    }
+                }
+                else
+                {
+                    if (!(new Rectangle((int)GridPosition.X, (int)GridPosition.Y, 1, 1).Intersects(zone.Bounds)) && zone.InUse)
+                    {
+                        zone.InUse = false;
+                        justEntered = false;
+                    }
+                }
+            });
+
         }
 
         private void HandleInput(bool gamePadConnected, ref Vector2 newPos)

@@ -231,6 +231,9 @@ namespace Origins_Remake.Util
             SearchNode startNode = searchNodes[startPoint.Y, startPoint.X];
             SearchNode endNode = searchNodes[endPoint.Y, endPoint.X];
 
+            if (startNode == null)
+                return new List<Vector2>();
+
             startNode.InOpenList = true;
             startNode.DistanceToGoal = Heuristic(startPoint, endPoint);
             startNode.DistanceTraveled = 0;

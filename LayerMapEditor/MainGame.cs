@@ -80,6 +80,7 @@ namespace LayerMapEditor
             canvas = new Canvas(this);
 
             level = new TileMap(30, 30);
+            level.AddTileSet(new TileSet("TileSheets\\dirt.png", 32, 32));
 
             for (int i = 0; i < 3; i++)
                 level.AddLayer(new MapLayer(level));
@@ -124,8 +125,6 @@ namespace LayerMapEditor
 
             canvas.Draw(spriteBatch, gameTime);
             hud.Draw(spriteBatch, gameTime);
-
-
 
             base.Draw(gameTime);
         }

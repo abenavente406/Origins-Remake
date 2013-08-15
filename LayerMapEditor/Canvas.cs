@@ -28,7 +28,7 @@ namespace LayerMapEditor
         private Texture2D background;
         private DrawableRectangle border;
         private Texture2D plainWhite;
-
+        private Texture2D playerSpawnTex;
         private SpriteFont font;
 
         public Rectangle Bounds
@@ -48,7 +48,8 @@ namespace LayerMapEditor
         public void Initialize()
         {
             Camera.Initialize(startPos, new Rectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT), 
-                new Vector2(gameRef.level.WidthInPixels - CANVAS_WIDTH, gameRef.level.HeightInPixels - CANVAS_HEIGHT)); 
+                new Vector2(gameRef.level.WidthInPixels - CANVAS_WIDTH, gameRef.level.HeightInPixels - CANVAS_HEIGHT));
+            Camera.MaxClamp = new Vector2(gameRef.level.WidthInPixels - CANVAS_WIDTH, gameRef.level.HeightInPixels - CANVAS_HEIGHT);
         }
 
         public void LoadContent()
@@ -61,6 +62,8 @@ namespace LayerMapEditor
                 false);
 
             font = gameRef.Content.Load<SpriteFont>(@"Fonts\main_font");
+
+            playerSpawnTex = gameRef.Content.Load<Texture2D>("Images/player_spawn");
         }
 
         List<Vector2> positions = new List<Vector2>();
@@ -90,10 +93,14 @@ namespace LayerMapEditor
                             gameRef.level.SetTile((int)transformedTile.X, (int)transformedTile.Y,
                                 new Tile(gameRef.SelectedTileIndex, gameRef.SelectedTileSheetIndex));
                         }
-                        else
+                        else if (gameRef.SelectedTool == Tool.Fill)
                         {
                             Floodfill(new Point((int)transformedTile.X, (int)transformedTile.Y), gameRef.level.CurrentLayer.GetTile((int)transformedTile.X, (int)transformedTile.Y),
                                 new Tile(gameRef.SelectedTileIndex, gameRef.SelectedTileSheetIndex));
+                        }
+                        else if (gameRef.SelectedTool == Tool.PlayerSpawn)
+                        {
+                            gameRef.level.PlayerSpawnPoint = new Point((int)transformedTile.X, (int)transformedTile.Y);
                         }
                     }
                 }
@@ -104,13 +111,14 @@ namespace LayerMapEditor
                         gameRef.level.SetCollision((int)transformedTile.X, (int)transformedTile.Y,
                             false);
                     }
-                    else
+                    else 
                     {
                         if (gameRef.SelectedTool == Tool.Pencil)
                         {
                             gameRef.level.SetTile((int)transformedTile.X, (int)transformedTile.Y,
                                 new Tile(-1, -1));
-                        } else
+                        } 
+                        else if (gameRef.SelectedTool == Tool.Fill)
                         {
                             Floodfill(new Point((int)transformedTile.X, (int)transformedTile.Y),
                                 gameRef.level.CurrentLayer.GetTile((int)transformedTile.X, (int)transformedTile.Y),
@@ -119,16 +127,6 @@ namespace LayerMapEditor
                     }
                 }
 
-                float speedMult = 2.0f;
-
-                if (InputHandler.KeyDown(Keys.Up))
-                    Camera.SetPosition(Camera.Position + new Vector2(0, -3 * speedMult));
-                if (InputHandler.KeyDown(Keys.Down))
-                    Camera.SetPosition(Camera.Position + new Vector2(0, 3 * speedMult));
-                if (InputHandler.KeyDown(Keys.Left))
-                    Camera.SetPosition(Camera.Position + new Vector2(-3 * speedMult, 0));
-                if (InputHandler.KeyDown(Keys.Right))
-                    Camera.SetPosition(Camera.Position + new Vector2(3 * speedMult, 0));
             }
             else
             {
@@ -151,6 +149,16 @@ namespace LayerMapEditor
                 {
                     Camera.Zoom = Camera.Zoom - .05f;
                 }
+
+                float speedMult = 2.0f;
+                if (InputHandler.KeyDown(Keys.Up))
+                    Camera.SetPosition(Camera.Position + new Vector2(0, -3 * speedMult));
+                if (InputHandler.KeyDown(Keys.Down))
+                    Camera.SetPosition(Camera.Position + new Vector2(0, 3 * speedMult));
+                if (InputHandler.KeyDown(Keys.Left))
+                    Camera.SetPosition(Camera.Position + new Vector2(-3 * speedMult, 0));
+                if (InputHandler.KeyDown(Keys.Right))
+                    Camera.SetPosition(Camera.Position + new Vector2(3 * speedMult, 0));
             }
         }
 
@@ -188,6 +196,10 @@ namespace LayerMapEditor
                     }
                 }
             }
+            batch.Draw(playerSpawnTex, 
+                new Rectangle(gameRef.level.PlayerSpawnPoint.X * Engine.TileWidth,
+                    gameRef.level.PlayerSpawnPoint.Y * Engine.TileHeight, 32, 32), 
+                Color.White);
             batch.End();
 
             batch.Begin();

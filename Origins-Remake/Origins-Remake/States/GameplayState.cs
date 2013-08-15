@@ -11,6 +11,7 @@ using Origins_Remake.GUI;
 using Origins_Remake.Util;
 using GameHelperLibrary.Shapes;
 using OriginsLib.IO;
+using OriginsLib.TileEngine;
 
 namespace Origins_Remake.States
 {
@@ -85,9 +86,14 @@ namespace Origins_Remake.States
 
             entityManager = new EntityManager(gameRef);
 
+
             if (!loadedGame)
             {
                 EntityManager.Player.Name = Config.currentlyPlaying;
+
+                if (LevelManager.CurrentLevel.PlayerSpawnPoint.X > -1 &&
+                    LevelManager.CurrentLevel.PlayerSpawnPoint.Y > -1)
+                    EntityManager.Player.Position = new Vector2(LevelManager.CurrentLevel.PlayerSpawnPoint.X, LevelManager.CurrentLevel.PlayerSpawnPoint.Y) * Engine.TileWidth ;
             }
             else
             {
@@ -111,8 +117,8 @@ namespace Origins_Remake.States
                     MainGame.GAME_HEIGHT / 1.8f - lblPauseDisplay.Height - 10);
 
                 var back = new LinkLabel(1) { Name = "lnklblBack", Text = "Resume" };
-                var quit = new LinkLabel(3) { Name = "lnklblQuit", Text = "Quit to Menu" };
                 var save = new LinkLabel(2) { Name = "lnklblSave", Text = "Save Game" };
+                var quit = new LinkLabel(3) { Name = "lnklblQuit", Text = "Quit to Menu" };
 
                 pauseControls_Normal.Add(lblPauseDisplay);
                 pauseControls_Normal.Add(back);

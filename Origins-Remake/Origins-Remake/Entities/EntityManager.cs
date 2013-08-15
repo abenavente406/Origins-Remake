@@ -6,6 +6,7 @@ using Origins_Remake.Levels;
 using Origins_Remake.Util;
 using System;
 using OriginsLib.Util;
+using OriginsLib.TileEngine;
 
 namespace Origins_Remake.Entities
 {
@@ -43,6 +44,7 @@ namespace Origins_Remake.Entities
         {
             gameRef = (MainGame)game;
             player = new Player();
+            player.Position = new Vector2(1, 5 * Engine.TileHeight);
 
             pathfinder = new Pathfinder(LevelManager.CurrentLevel);
 
@@ -58,7 +60,7 @@ namespace Origins_Remake.Entities
 
             var sheet = SheetManager.SpriteSheets["allEntities"];
 
-            var questGiver1 = new Npc(Vector2.Zero, rand);
+            var questGiver1 = new Npc(new Vector2(0, 5 * Engine.TileHeight), rand);
             string d = "Hi there, " + Config.currentlyPlaying + "!" +
                 " I see you've discovered the first tutorial npc in the game.  Well, I'm here to teach you how to play." + 
                 " To interact with the world, press 'Z'.  To exit our dialogue boxes, press 'X'.  To pause, press 'Esc'." + 

@@ -172,6 +172,8 @@ namespace OriginsLib.TileEngine
             {
                 var fs = File.Open(path, FileMode.Open);
                 var image = Texture2D.FromStream(Config.GraphicsDevice, fs);
+                fs.Close();
+                fs.Dispose();
 
                 if (Image == null)
                     Image = image;

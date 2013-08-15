@@ -13,8 +13,11 @@ namespace OriginsLib.TileEngine
     {
         #region Fields
 
+        private Guid guid;
+
         private List<TileSet> tileSets = new List<TileSet>();
         private List<MapLayer> layers = new List<MapLayer>();
+        public List<ExitZone> exitZones = new List<ExitZone>();
 
         private int currentLayerIndex = 0;
         private int currentTileSetIndex = 0;
@@ -23,10 +26,20 @@ namespace OriginsLib.TileEngine
         private int heightInTiles = 0;
 
         private bool[,] collisionMap;
+
+        private Point playerSpawnPoint = new Point(-1, -1);
         
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The id number for the level
+        /// </summary>
+        public Guid GUID
+        {
+            get { return guid; }
+        }
 
         /// <summary>
         /// Gets the width of the map in tiles
@@ -93,7 +106,10 @@ namespace OriginsLib.TileEngine
         /// </summary>
         public MapLayer CurrentLayer
         {
-            get { return layers[CurrentLayerIndex]; }
+            get 
+            {
+                return layers[CurrentLayerIndex];
+            }
         }
 
         /// <summary>
@@ -101,7 +117,10 @@ namespace OriginsLib.TileEngine
         /// </summary>
         public TileSet CurrentTileSet
         {
-            get { return tileSets[CurrentTileSetIndex]; }
+            get
+            {
+                return tileSets[CurrentTileSetIndex];
+            }
         }
         
         /// <summary>
@@ -109,9 +128,45 @@ namespace OriginsLib.TileEngine
         /// </summary>
         public List<TileSet> TileSets
         {
-            get { return tileSets; }
+            get {
+                return tileSets;
+            }
         }
 
+        /// <summary>
+        /// All the layers in the level
+        /// </summary>
+        public List<MapLayer> Layers
+        {
+            get { return layers; }
+        }
+
+        /// <summary>
+        /// Gets all exit zones in the level
+        /// </summary>
+        public List<ExitZone> ExitZones
+        {
+            get { return exitZones; }
+            set { exitZones = value; }
+        }
+
+        /// <summary>
+        /// The point where the player spawns
+        /// </summary>
+        public Point PlayerSpawnPoint
+        {
+            get { return playerSpawnPoint; }
+            set
+            {
+                if ((value.X < 0 || value.Y < 0 ||
+                    value.X >= widthInTiles ||
+                    value.Y >= HeightInTiles) & 
+                    (value.X != -1 && value.Y != -1))
+                    playerSpawnPoint = Point.Zero;
+                else
+                    playerSpawnPoint = value;
+            }
+        }
         #endregion
 
         #region Initialization
@@ -122,6 +177,7 @@ namespace OriginsLib.TileEngine
         /// <param name="map"></param>
         public TileMap(TileMap map)
         {
+            guid = map.guid;
             LoadMap(map);
         }
 
@@ -132,10 +188,12 @@ namespace OriginsLib.TileEngine
         /// <param name="heightInTiles"></param>
         public TileMap(int widthInTiles, int heightInTiles)
         {
+            guid = Guid.NewGuid();
+
             this.widthInTiles = widthInTiles;
             this.heightInTiles = heightInTiles;
 
-            collisionMap = new bool[widthInTiles, heightInTiles];
+            collisionMap = new bool[heightInTiles, widthInTiles];
         }
 
         #endregion
@@ -180,6 +238,9 @@ namespace OriginsLib.TileEngine
                                 continue;
 
                             tile = layer.GetTile(x, y);
+
+                            if (tile == null)
+                                continue;
 
                             if (tile.TileIndex == -1 || tile.TileSet == -1)
                                 continue;
@@ -296,6 +357,14 @@ namespace OriginsLib.TileEngine
             return collisionMap[y, x];
         }
 
+        /// <summary>
+        /// Adds an exit zone
+        /// </summary>
+        /// <param name="zone"></param>
+        public void AddExitZone(ExitZone zone)
+        {
+            exitZones.Add(zone);
+        }
         #endregion
 
         #region IO
@@ -320,12 +389,15 @@ namespace OriginsLib.TileEngine
         public void Load(string path)
         {
             BinaryFormatter serializer = new BinaryFormatter();
-            var fs = File.Open(path, FileMode.Open);
-            var tileMap = (TileMap)serializer.Deserialize(fs);
-            fs.Close();
-            fs.Dispose();
 
-            LoadMap(tileMap);
+            using (var fs = File.Open(path, FileMode.Open))
+            {
+                var tileMap = (TileMap)serializer.Deserialize(fs);
+                fs.Close();
+                fs.Dispose();
+                LoadMap(tileMap);
+            }
+
         }
 
         /// <summary>
@@ -339,11 +411,49 @@ namespace OriginsLib.TileEngine
             this.widthInTiles = map.widthInTiles;
             this.heightInTiles = map.heightInTiles;
             this.collisionMap = (bool[,])map.collisionMap.Clone();
+            this.playerSpawnPoint = map.playerSpawnPoint;
 
             foreach (TileSet t in tileSets)
                 t.Initialize(t.Path);
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class ExitZone
+    {
+        private bool inUse;
+        private Guid target, parent;
+        private Rectangle bounds;
+
+        public Rectangle Bounds
+        {
+            get { return bounds; }
+        }
+
+        public Guid Target
+        {
+            get { return target; }
+        }
+
+        public Guid Parent
+        {
+            get { return parent; }
+        }
+
+        public bool InUse
+        {
+            get { return inUse; }
+            set { inUse = value; }
+        }
+
+        public ExitZone(Rectangle bounds, Guid parent, Guid target)
+        {
+            inUse = false;
+            this.bounds = bounds;
+            this.parent = parent;   
+            this.target = target;
+        }
     }
 }

@@ -60,3 +60,9 @@ Content\Fonts\main_font.xnb
 Content\Fonts\pericles9.xnb
 Content\Fonts\pescadero9.xnb
 Content\Fonts\pescadero9b.xnb
+Content\Sprites\dungeon_tiles.xnb
+Content\Sprites\Entities\all_entities.xnb
+Content\Sprites\Entities\player.xnb
+Content\Sprites\rock.xnb
+Content\Sprites\tilesheet_0.xnb
+Content\Sprites\tree.xnb

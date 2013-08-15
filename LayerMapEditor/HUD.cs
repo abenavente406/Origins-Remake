@@ -8,13 +8,15 @@ using System;
 using LayerMapEditor.Forms;
 using OriginsLib.TileEngine;
 using System.Reflection;
+using OriginsLib.Util;
 
 namespace LayerMapEditor
 {
     public enum Tool
     {
         Pencil,
-        Fill
+        Fill,
+        PlayerSpawn
     }
 
     public class HUD
@@ -152,6 +154,7 @@ namespace LayerMapEditor
                 if (frm.DialogResult == System.Windows.Forms.DialogResult.OK)
                 {
                     selectedTileSetIndex = frm.SelectedTileSheetId;
+                    gameRef.level.CurrentTileSetIndex = selectedTileSetIndex;
                 }
 
                 gameRef.State = State.Playing;
@@ -202,6 +205,9 @@ namespace LayerMapEditor
                     gameRef.level.Load(openFileDlg.FileName);
                 }
 
+                Camera.MaxClamp = new Vector2(gameRef.level.WidthInPixels - Canvas.CANVAS_WIDTH,
+                    gameRef.level.HeightInPixels - Canvas.CANVAS_HEIGHT);
+
                 gameRef.State = State.Playing;
             };
             controls.Add(loadMap);
@@ -236,6 +242,32 @@ namespace LayerMapEditor
             lblTileIndex.Position = fill.Position + new Vector2(0, fill.Height + 10);
             controls.Add(lblTileIndex);
 
+            Button newMap = new Button()
+            {
+                Name = "btnNewMap",
+                Text = "New Map",
+                Position = lblTileIndex.Position + new Vector2(0, lblTileIndex.Height + 10)
+            };
+            newMap.OnClick += (o, e) =>
+            {
+                gameRef.State = State.Freeze;
+                new frmNewMap(gameRef).ShowDialog();
+                gameRef.State = State.Playing;
+            };
+            controls.Add(newMap);
+
+            Button playerSpawn = new Button()
+            {
+                Name = "btnPlayerSpawn",
+                Text = "Set Player Spawn",
+                Position = newMap.Position + new Vector2(0, newMap.Height + 10)
+            };
+            playerSpawn.OnClick += (o, e) =>
+            {
+                selectedTool = Tool.PlayerSpawn;
+            };
+            controls.Add(playerSpawn);
+
             //selector = new TileSelector(gameRef, lblTileIndex.Position + new Vector2(0, lblTileIndex.Height + 10));
             //selector.Width = HUD_WIDTH;
         }
@@ -266,7 +298,7 @@ namespace LayerMapEditor
 
             selectedTileIndex %= gameRef.level.GetTileSet(SelectedTileSetIndex).SourceRectangles.Length;
 
-            ((Label)controls[controls.Count - 1]).Text = "{X: " + gameRef.level.CurrentTileSet.SourceRectangles[SelectedTileIndex].X / Engine.TileWidth + ", " +
+            ((Label)controls[controls.Count - 3]).Text = "{X: " + gameRef.level.CurrentTileSet.SourceRectangles[SelectedTileIndex].X / Engine.TileWidth + ", " +
                         "Y: " + gameRef.level.CurrentTileSet.SourceRectangles[SelectedTileIndex].Y / Engine.TileHeight + "}";
             
         }

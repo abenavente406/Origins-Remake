@@ -76,11 +76,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Canvas.cs" />
+    <Compile Include="Forms\frmGetTileSetsPerLayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmGetTileSetsPerLayer.Designer.cs">
+      <DependentUpon>frmGetTileSetsPerLayer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmGetTileSheet.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmGetTileSheet.Designer.cs">
       <DependentUpon>frmGetTileSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmNewMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmNewMap.Designer.cs">
+      <DependentUpon>frmNewMap.cs</DependentUpon>
     </Compile>
     <Compile Include="HUD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,8 +149,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="Forms\frmGetTileSetsPerLayer.resx">
+      <DependentUpon>frmGetTileSetsPerLayer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmGetTileSheet.resx">
       <DependentUpon>frmGetTileSheet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmNewMap.resx">
+      <DependentUpon>frmNewMap.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
