@@ -45,29 +45,32 @@ namespace Origins_Remake.Levels
 
         public LevelManager(Game game)
         {
-            gameRef = (MainGame)game;
+            if (gameRef != null)
+            {
+                gameRef = (MainGame)game;
 
-            var tutLevel = new TileMap(0, 0);
-            tutLevel.Load(@"test_level.slf");
-            levels.Add(tutLevel.GUID, tutLevel);
-            levelIds.Add("tutorial level", tutLevel.GUID);
+                var tutLevel = new TileMap(0, 0);
+                tutLevel.Load(@"test_level.slf");
+                levels.Add(tutLevel.GUID, tutLevel);
+                levelIds.Add("tutorial level", tutLevel.GUID);
 
-            var connect_1Level = new TileMap(0, 0);
-            connect_1Level.Load(@"connect_1.slf");
-            levels.Add(connect_1Level.GUID, connect_1Level);
-            levelIds.Add("connect 1 level", connect_1Level.GUID);
+                var connect_1Level = new TileMap(0, 0);
+                connect_1Level.Load(@"connect_1.slf");
+                levels.Add(connect_1Level.GUID, connect_1Level);
+                levelIds.Add("connect 1 level", connect_1Level.GUID);
 
-            var obstacle_1Level = new TileMap(0, 0);
-            obstacle_1Level.Load(@"obstacle_1.slf");
-            levels.Add(obstacle_1Level.GUID, obstacle_1Level);
-            levelIds.Add("obstacle 1 level", obstacle_1Level.GUID);
+                var obstacle_1Level = new TileMap(0, 0);
+                obstacle_1Level.Load(@"obstacle_1.slf");
+                levels.Add(obstacle_1Level.GUID, obstacle_1Level);
+                levelIds.Add("obstacle 1 level", obstacle_1Level.GUID);
 
-            levels[levelIds["tutorial level"]].AddExitZone(new ExitZone(new Rectangle(tutLevel.WidthInTiles - 1, 3, 1, 2), levelIds["tutorial level"], levelIds["obstacle 1 level"]));
-            levels[levelIds["obstacle 1 level"]].AddExitZone(new ExitZone(new Rectangle(0, 1, 1, 2), levelIds["obstacle 1 level"], levelIds["connect 1 level"]));
+                levels[levelIds["tutorial level"]].AddExitZone(new ExitZone(new Rectangle(tutLevel.WidthInTiles - 1, 3, 1, 2), levelIds["tutorial level"], levelIds["connect 1 level"]));
+                levels[levelIds["obstacle 1 level"]].AddExitZone(new ExitZone(new Rectangle(0, 1, 1, 2), levelIds["obstacle 1 level"], levelIds["connect 1 level"]));
 
-            ChangeLevel(levelIds["Tutorial Level".ToLower()]);
+                ChangeLevel(levelIds["Tutorial Level".ToLower()]);
 
-            red = new DrawableRectangle(gameRef.GraphicsDevice, new Vector2(10, 10), Color.White, true).Texture;
+                red = new DrawableRectangle(gameRef.GraphicsDevice, new Vector2(10, 10), Color.White, true).Texture;
+            }
         }
 
         public static void Update(GameTime gameTime)
