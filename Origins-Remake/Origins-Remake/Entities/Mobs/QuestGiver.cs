@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Origins_Remake.Quests;
 
 namespace Origins_Remake.Entities.Mobs
 {
@@ -29,7 +30,7 @@ namespace Origins_Remake.Entities.Mobs
 
         #region Fields
 
-        private int questId = 0;
+        private Quest quest;
         private bool questCompleted = false;
         private bool firstTimeSpokenTo = false;
 
@@ -40,9 +41,10 @@ namespace Origins_Remake.Entities.Mobs
         /// <summary>
         /// Gets the quest id for the quest giver
         /// </summary>
-        public int QuestId
+        public Quest Quest
         {
-            get { return questId; }
+            get { return quest; }
+            set { quest = value; }
         }
 
         /// <summary>
@@ -78,17 +80,13 @@ namespace Origins_Remake.Entities.Mobs
         /// </summary>
         public override void Speak()
         {
+            base.Speak();
             if (!firstTimeSpokenTo)
             {
                 if (OnFirstTimeSpokenTo != null)
                     OnFirstTimeSpokenTo(this, null);
                 firstTimeSpokenTo = true;
             }
-
-
-            // TODO: Speak to the player by changing the game state and 
-            //       popping up a black box with text
-            // --------------------------------------------------------
         }
 
         #endregion

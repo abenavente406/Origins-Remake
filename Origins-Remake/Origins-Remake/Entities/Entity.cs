@@ -14,6 +14,7 @@ namespace Origins_Remake.Entities
         protected int width;
         protected int height;
         protected float movementSpeed = 2.0f;
+        protected float hitpoints = 100.0f;
 
         protected Texture2D texUp;
         protected Texture2D texDown;

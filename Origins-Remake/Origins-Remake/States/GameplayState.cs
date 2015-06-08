@@ -12,6 +12,8 @@ using Origins_Remake.Util;
 using GameHelperLibrary.Shapes;
 using OriginsLib.IO;
 using OriginsLib.TileEngine;
+using Origins_Remake.Quests;
+using Origins_Remake.Entities.Mobs;
 
 namespace Origins_Remake.States
 {
@@ -49,6 +51,8 @@ namespace Origins_Remake.States
         private int renderTargetHeight;
 
         private Texture2D background;
+
+        private QuestManager quests;
 
         public static HUD hud;
 
@@ -201,6 +205,22 @@ namespace Origins_Remake.States
 
             blurOverlay.ComputeOffsets(renderTargetWidth, renderTargetHeight);
 
+            quests = new QuestManager();
+
+            Quest q = new Quest(0, (QuestGiver)EntityManager.Npcs[0], EntityManager.Player);
+            q.CheckSuccess += (delegate()
+            {
+                return EntityManager.Player.NoClip == true;
+            });
+            quests.AddQuest(q);
+
+            ((QuestGiver)EntityManager.Npcs[0]).Quest = q;
+            ((QuestGiver)EntityManager.Npcs[0]).OnQuestCompleted += (delegate(object sender2, EventArgs args)
+            {
+                var questGiverSender = (QuestGiver)sender2;
+                questGiverSender.Dialogues[0] = "Good job!";
+            });
+
             base.LargeLoadContent(sender);
         }
 
@@ -285,6 +305,7 @@ namespace Origins_Remake.States
 #endif
                     LevelManager.Update(gameTime);
                     EntityManager.UpdateAll(gameTime);
+                    quests.Update(gameTime);
 
                     if (InputHandler.KeyPressed(Keys.Escape))
                     {

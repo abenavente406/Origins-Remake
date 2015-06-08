@@ -84,7 +84,6 @@ namespace Origins_Remake.Entities.Mobs
         {
             if (gamePadConnected)
             {
-
             }
             else
             {

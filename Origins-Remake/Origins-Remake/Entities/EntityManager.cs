@@ -60,7 +60,7 @@ namespace Origins_Remake.Entities
 
             var sheet = SheetManager.SpriteSheets["allEntities"];
 
-            var questGiver1 = new Npc(new Vector2(0, 5 * Engine.TileHeight), rand);
+            var questGiver1 = new QuestGiver(new Vector2(0, 5 * Engine.TileHeight));
             string d = "Hi there, " + Config.currentlyPlaying + "!" +
                 " I see you've discovered the first tutorial npc in the game.  Well, I'm here to teach you how to play." + 
                 " To interact with the world, press 'Z'.  To exit our dialogue boxes, press 'X'.  To pause, press 'Esc'." + 
@@ -70,6 +70,11 @@ namespace Origins_Remake.Entities
 #endif 
 
             questGiver1.AddDialogue(d);
+            questGiver1.OnFirstTimeSpokenTo += (delegate(object sender, EventArgs args)
+            {
+                questGiver1.Dialogues[0] = "I already spoke to you! Try pressing 'P'";
+            });
+
             questGiver1.SetTextures(
                 down: sheet.GetSubImage(0, 28),
                 left: sheet.GetSubImage(0, 28),
