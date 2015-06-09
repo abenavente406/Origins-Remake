@@ -260,6 +260,15 @@ namespace Origins_Remake.Entities
             }
             return result;
         }
+
+        /// <summary>
+        /// This method attacks a specified entity
+        /// </summary>
+        /// <param name="to_attack">Entity to Attack</param>
+        protected void Attack(Origins_Remake.Entities.Interfaces.IAttackable to_attack)
+        {
+            to_attack.getHit(10);
+        }
         #endregion
     }
 }

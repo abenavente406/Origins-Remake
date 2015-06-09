@@ -7,10 +7,11 @@ using OriginsLib.Util;
 using OriginsLib.IO;
 using OriginsLib.TileEngine;
 using Origins_Remake.Levels;
+using Origins_Remake.Entities.Interfaces;
 
 namespace Origins_Remake.Entities.Mobs
 {
-    public class Player : AnimatedEntity
+    public class Player : AnimatedEntity, Origins_Remake.Entities.Interfaces.IAttackable
     {
         private bool isTalking = false;
         private int idOfExitZoneEntered = 0;
@@ -80,6 +81,20 @@ namespace Origins_Remake.Entities.Mobs
 
         }
 
+        /// <summary>
+        /// This method handles getting attacked by another entity
+        /// </summary>
+        /// <param name="hit">How many hitpoints the attacker removes</param>
+        
+        public void getHit(int hit)
+        {
+            hitpoints = hitpoints - hit;
+            if (hitpoints <= 0)
+            {
+                LevelManager.ChangeLevel(LevelManager.LevelIds["obstacle 1 level"]);
+            }
+        }
+
         private void HandleInput(bool gamePadConnected, ref Vector2 newPos)
         {
             if (gamePadConnected)
@@ -111,6 +126,7 @@ namespace Origins_Remake.Entities.Mobs
                     isMoving = true;
 
                 var npc = GetNearbyNpc();
+                var enemy = GetNearbyEnemy();
 
                 if (npc != null)
                 {
@@ -123,17 +139,36 @@ namespace Origins_Remake.Entities.Mobs
                         }
                     }
                 }
+                if (enemy != null)
+                {
+                    if (InputHandler.KeyPressed(Keys.C))
+                    {
+                        Attack(enemy);
+                    }
+                }
             }
         }
 
         private Npc GetNearbyNpc()
         {
+            Npc to_return = null;
             foreach (Npc npc in EntityManager.Npcs)
             {
                 if (Vector2.Distance(this.pos, npc.Position) < 15)
-                    return npc;
+                    to_return = npc;
             }
-            return null;
+            return to_return;
+        }
+
+        private Enemy GetNearbyEnemy()
+        {
+            Enemy to_return = null;
+            foreach (Enemy enemy in EntityManager.Enemies)
+            {
+                if (Vector2.Distance(this.pos, enemy.Position) < 15)
+                    to_return = enemy;
+            }
+            return to_return;
         }
 
         public void LoadFromData(EntityProperties props)
