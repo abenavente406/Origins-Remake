@@ -76,6 +76,7 @@
     <Compile Include="Entities\AnimatedEntity.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityManager.cs" />
+    <Compile Include="Entities\Interfaces\IAttackable.cs" />
     <Compile Include="Entities\Mobs\Enemy.cs" />
     <Compile Include="Entities\Mobs\Npc.cs" />
     <Compile Include="Entities\Mobs\Player.cs" />

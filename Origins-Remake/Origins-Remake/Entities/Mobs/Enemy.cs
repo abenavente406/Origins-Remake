@@ -18,7 +18,7 @@ namespace Origins_Remake.Entities.Mobs
         FLEEING
     }
 
-    public abstract class Enemy : AnimatedEntity
+    public abstract class Enemy : AnimatedEntity, Origins_Remake.Entities.Interfaces.IAttackable 
     {
         protected float detectRange = 250f;
 
@@ -169,6 +169,18 @@ namespace Origins_Remake.Entities.Mobs
 
             newPos = Position + new Vector2(dirX * 2 * 1,
                  dirY * 2 * 1);
+        }
+        /// <summary>
+        /// This method handles getting attacked by another entity
+        /// </summary>
+        /// <param name="hit">How many hitpoints the attacker removes</param>
+        public void getHit(int hit)
+        {
+            hitpoints = hitpoints - hit;
+            if (hitpoints <= 0)
+            {
+                EntityManager.Enemies.Remove(this);
+            }
         }
     }
 }
